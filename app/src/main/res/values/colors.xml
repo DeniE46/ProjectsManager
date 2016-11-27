@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4ddacb</color>
+    <color name="colorPrimaryDark">#4ddacb</color>
+    <color name="colorAccent">#4ddacb</color>
+    <color name="tasks_status_color_silver">#75DFE6E1</color>
+    <color name="tasks_status_color_green">#7577FD3D</color>
+    <color name="tasks_status_color_yellow">#75FDF73D</color>
+    <color name="tasks_status_color_orange">#75FD903D</color>
+    <color name="tasks_status_color_red">#75FD3D3D</color>
+</resources>
