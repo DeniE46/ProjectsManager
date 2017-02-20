@@ -103,7 +103,7 @@ import java.util.List;
             }
             //./checks how many days are left to deadline for a task and colors the cardView respectfully
         }
-        setFadeAnimation(holder.itemView);
+        //setFadeAnimation(holder.itemView);
 
     }
 

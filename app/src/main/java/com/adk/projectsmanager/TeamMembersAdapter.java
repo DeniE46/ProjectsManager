@@ -65,7 +65,7 @@ import java.util.List;
         holder.name.setText(tm.getName());
         holder.occupation.setText(tm.getOccupation());
         holder.PicId.setImageResource(tm.getPicId());
-        setFadeAnimation(holder.itemView);
+       // setFadeAnimation(holder.itemView);
     }
 
     private void setFadeAnimation(View view) {

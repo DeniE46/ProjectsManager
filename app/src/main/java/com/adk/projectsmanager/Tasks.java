@@ -1,12 +1,16 @@
 package com.adk.projectsmanager;
 
+
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +19,9 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
@@ -23,15 +30,17 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class Tasks extends AppCompatActivity {
+public class Tasks extends AppCompatActivity implements View.OnClickListener {
     //adding two lines of code for the adapter and teamMembers class to work
 
 
@@ -39,6 +48,10 @@ public class Tasks extends AppCompatActivity {
     private int year, month, day;
     private List<TeamMembers> tm = new ArrayList<>();
     private TaskAdapter taskAdapter;
+    CardView cardView;
+    TextView createTaskName, createTaskOwner,createTaskDeadline, createTaskDescription;
+    Button createTaskSubmit;
+
 
 
 
@@ -48,8 +61,23 @@ public class Tasks extends AppCompatActivity {
         setContentView(R.layout.activity_tasks);
         Firebase.setAndroidContext(this);
 
+        cardView = (CardView)findViewById(R.id.card_test);
+        //checking if the view is null, if not hide it
+        if (cardView != null) {
+            cardView.setVisibility(View.GONE);
+        }
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setElevation(0);
+        }
 
 
+        createTaskName = (TextView)findViewById(R.id.create_task_name);
+        createTaskOwner = (TextView)findViewById(R.id.create_task_owner);
+        createTaskDeadline = (TextView)findViewById(R.id.create_task_deadline);
+        createTaskDescription = (TextView)findViewById(R.id.create_task_description);
+        createTaskSubmit = (Button)findViewById(R.id.create_task_submit);
+        createTaskDeadline.setOnClickListener(this);
+        createTaskSubmit.setOnClickListener(this);
 
         //creates an object to return true if touch is detected
         final GestureDetector mGestureDetector = new GestureDetector(Tasks.this, new GestureDetector.SimpleOnGestureListener() {
@@ -61,16 +89,8 @@ public class Tasks extends AppCompatActivity {
         });
         //./creates an object to return true if touch is detected
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        // fab.setBackgroundColor(getResources().getColor(Color.red));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              callActivity();
 
-            }
 
-        });
          sync();
 
 
@@ -79,22 +99,19 @@ public class Tasks extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv);
         taskAdapter = new TaskAdapter(tm);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(taskAdapter);
+        if(recyclerView != null){
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(taskAdapter);
+            //intercepts onclick and gets position
+            //pos is int containing the position of the card view that is being clicked
 
-       // prepareTeamMembersData();
-
-
-
-        //intercepts onclick and gets position
-        //pos is int containing the position of the card view that is being clicked
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
                 @Override
                 public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
                     View child = recyclerView.findChildViewUnder(motionEvent.getX(),motionEvent.getY());
                     if(child!=null && mGestureDetector.onTouchEvent(motionEvent)){
-                        int pos = recyclerView.getChildPosition(child);
+                        int pos = recyclerView.getChildAdapterPosition(child);
                         //dialogTaskOptions(pos);
                         taskOptions(pos);
                         return true;
@@ -111,8 +128,14 @@ public class Tasks extends AppCompatActivity {
                 public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
                 }
-        });
-        //./intercepts onclick and gets position
+            });
+            //./intercepts onclick and gets position
+        }
+
+        // prepareTeamMembersData();
+        // run once to disable if empty
+        //checkFieldsForEmptyValues();
+
 
     }
 
@@ -126,7 +149,8 @@ public class Tasks extends AppCompatActivity {
                 List<String> IDList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     //iterates through all of the Task node children and saves their names in a list called IDList
-                    IDList.add(child.toString().substring(21,41));
+                    IDList.add(child.getKey());
+                    //used to be child.toString().substring(21,41)
                 }
                final String uniqueNode = IDList.get(position);
                 //start of dialog
@@ -156,7 +180,7 @@ public class Tasks extends AppCompatActivity {
                                         -not too professional
                                         -flickering caused by activity restart
                                         -has to iterate through the base after each deletion (if bad it will be because it may has to iterate through lots of information)
-                                       ####Can be improved by putting the code that restars the activity in OnDataChange() method
+                                       ####Can be improved by putting the code that restarts the activity in OnDataChange() method
                                          future method of data deletion:
                                          1. delete the data from Firebase
                                          2. delete the element from the list using the corresponding position
@@ -231,11 +255,7 @@ public class Tasks extends AppCompatActivity {
 
 
 
-    public void callActivity(){
-        Intent intent = new Intent(this, CreateTasks.class);
-        startActivity(intent);
-        overridePendingTransition( android.R.anim.slide_in_left, android.R.anim.slide_out_right );
-    }
+
 
 
 
@@ -254,11 +274,16 @@ public class Tasks extends AppCompatActivity {
 
     public void sync (){
         View parentLayout = findViewById(R.id.root_view);
-        Snackbar snackbar = Snackbar
-                .make(parentLayout, "Synchronizing...", Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        snackbar.show();
-        syncTasks();
+        if (parentLayout != null) {
+            Snackbar snackbar = Snackbar
+                    .make(parentLayout, "Synchronizing...", Snackbar.LENGTH_LONG);
+            ViewGroup viewGroup = (ViewGroup) snackbar.getView();
+            viewGroup.setBackgroundColor(ContextCompat.getColor(Tasks.this, R.color.colorAccent));
+            snackbar.show();
+            //choose either the loading tasks from Firebase in this class or from TaskDownloader
+           syncTasks();
+
+        }
     }
 
 
@@ -280,14 +305,12 @@ public class Tasks extends AppCompatActivity {
 
                 /*choosing format, getting current date, transforming it to StringBuilder, then string,
                  then date and comparing it to datePicker, then getting the difference in days*/
-                SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
+                SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy", Locale.ENGLISH);
                 calendar = Calendar.getInstance();
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 day = calendar.get(Calendar.DAY_OF_MONTH);
-                StringBuilder currentDateStringBuilder = new StringBuilder().append(day).append(" ")
-                        .append(month+1).append(" ").append(year);
-                String currentDateString = currentDateStringBuilder.toString();
+                String currentDateString = day + " " + (month+1) + " " + year;
                 try
                 {
                     Date currentDate = formatter.parse(currentDateString);
@@ -332,7 +355,7 @@ public class Tasks extends AppCompatActivity {
 
 
 
-    private void prepareTeamMembersData(String taskName, String taskOwner, long timeRemaining,  String taskDescription, String flag) {
+    public void prepareTeamMembersData(String taskName, String taskOwner, long timeRemaining,  String taskDescription, String flag) {
 
        // TeamMembers teamMembers = new TeamMembers(name, occupancy, R.drawable.member);
         tm.add(new TeamMembers(taskName, taskOwner, timeRemaining, taskDescription, flag));
@@ -363,4 +386,94 @@ public class Tasks extends AppCompatActivity {
 
      }
 
+
+
+
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+           case(R.id.create_task_deadline):
+               showDatePickerDialog();
+               break;
+            case(R.id.create_task_submit):
+                checkFieldsForEmptyValues();
+
+                break;
+        }
+    }
+
+    public void showDatePickerDialog(){
+        DialogFragment dialogFragment = new DialogFragmentPicker();
+        dialogFragment.show(getFragmentManager(), "datePicker");
+    }
+
+
+
+    //add conditions for EditTexts and datePicker according to which the save button will be activated/disabled
+    private  void checkFieldsForEmptyValues(){
+        String TaskName = createTaskName.getText().toString();
+        String TaskOwner = createTaskOwner.getText().toString();
+        String deadline = createTaskDeadline.getText().toString();
+        String TaskDescription = createTaskDescription.getText().toString();
+
+
+        if(TaskName.equals("") | TaskOwner.equals("") | deadline.equals("") | TaskDescription.equals(""))
+        {
+            //createTaskSubmit.setEnabled(false);
+            //add icon to setError
+            if(TaskName.equals("")&& TaskOwner.equals("") && deadline.equals("") && TaskDescription.equals("")) {
+                createTaskName.setError("You need to enter a name for the task");
+                createTaskOwner.setError("Owner is not selected");
+                createTaskDeadline.setError("deadline is not selected");
+                createTaskDescription.setError("you need to add description");
+            }
+            else if(TaskName.equals("")){
+                // createTaskSubmit.setEnabled(false);
+                createTaskName.setError("You need to enter a name for the task");
+            }
+
+            if(TaskOwner.equals(""))
+            {
+                //  createTaskSubmit.setEnabled(false);
+                createTaskOwner.setError("Owner is not selected");
+            }
+            if(TaskDescription.equals(""))
+            {
+                // createTaskSubmit.setEnabled(false);
+                createTaskDescription.setError("you need to add description");
+            }
+            if(deadline.equals(""))
+            {
+                // createTaskSubmit.setEnabled(false);
+                createTaskDeadline.setError("deadline is not selected");
+            }
+        }
+
+
+        else
+        {
+           // createTaskSubmit.setEnabled(true);
+            Toast.makeText(this, "Task uploaded", Toast.LENGTH_SHORT).show();
+            new TaskUploader().execute(TaskName,TaskOwner, deadline, TaskDescription);
+            cardView.setVisibility(View.GONE);
+            clearTaskFields();
+        }
+
+
+    }
+
+    public void clearTaskFields(){
+        createTaskName.setText("");
+        createTaskOwner.setText("");
+        createTaskDeadline.setText("");
+        createTaskDescription.setText("");
+    }
+
+
+
 }
+
+
+
+

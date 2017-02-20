@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -45,13 +44,13 @@ public class Team extends AppCompatActivity {
     private String membersUrl;
     private String descUrl;
     private String tasksUrl;
+    WelcomeFragment welcomeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setContentView(R.layout.activity_main2);
+
 
         Firebase.setAndroidContext(this);
           mRef = new Firebase(Config.FIREBASE_URL);
@@ -61,8 +60,8 @@ public class Team extends AppCompatActivity {
         try {
             mUserId = mRef.getAuth().getUid();
         } catch (Exception e) {
-            MainActivity login = new  MainActivity();
-            login.loadLoginView();
+
+            welcomeFragment.loadLoginView();
         }
 
         membersUrl = Config.FIREBASE_URL  + "/users/" + mUserId + "/Members";
@@ -87,13 +86,7 @@ public class Team extends AppCompatActivity {
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                callActivity();
-            }
-        });
+
 
 
         //registering widgets, adapters, data structures and layouts
@@ -220,7 +213,7 @@ public class Team extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Toast.makeText(Team.this,R.string.toast_member_deleted,Toast.LENGTH_SHORT).show();
+               // Toast.makeText(Team.this,R.string.toast_member_deleted,Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -281,7 +274,8 @@ public class Team extends AppCompatActivity {
                 List<String> IDList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     //Toast.makeText(Main2Activity.this,child.toString().substring(21,41),Toast.LENGTH_LONG).show();
-                    IDList.add(child.toString().substring(21,41));
+                    IDList.add(child.getKey());
+                    //used to be child.toString().substring(21,41)
                 }
                 String del = IDList.get(position);
                 Toast.makeText(Team.this, R.string.toast_member_deleted, Toast.LENGTH_LONG).show();
@@ -303,8 +297,8 @@ public class Team extends AppCompatActivity {
         View v = LayoutInflater.from(Team.this).inflate(R.layout.create_description,null);
         final AlertDialog.Builder alertdialog = new AlertDialog.Builder(Team.this);
         alertdialog.setView(v);
-        final EditText projectName = (EditText)v.findViewById(R.id.project_name);
-        final EditText projectDescription = (EditText)v.findViewById(R.id.project_description);
+        final EditText projectName = (EditText)v.findViewById(R.id.edit_project_name);
+        final EditText projectDescription = (EditText)v.findViewById(R.id.edit_project_description);
         projectName.setHint(R.string.hint_project_name);
         projectDescription.setHint(R.string.hint_project_description);
         projectName.setText(name);
@@ -411,7 +405,7 @@ public class Team extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main_actions, menu);
+        getMenuInflater().inflate(R.menu.description_fragment_menu_actions, menu);
 
         return true;
     }

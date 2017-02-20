@@ -5,81 +5,42 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
 
 import com.firebase.client.Firebase;
 
+
+
 public class MainActivity extends AppCompatActivity {
 
-
-    private Firebase mRef;
-    private String mUserId;
-    public String itemsUrl = Config.FIREBASE_URL  + "/users/" + mUserId + "/items";
-    //ui elements
-
-    Button regButton,logButton;
-    //./ui elements
-
-
+    WelcomeFragment welcomeFragment = new WelcomeFragment();
+   RelativeLayout relativeLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Firebase.setAndroidContext(this);
 
+        relativeLayout = (RelativeLayout)findViewById(R.id.scene_holder);
+        //relativeLayout2 = (RelativeLayout)findViewById(R.id.welcome_fragment_layout);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        //catching ui elements
-        regButton = (Button)findViewById(R.id.reg_button);
-        logButton = (Button)findViewById(R.id.log_button);
-        //./ catching ui elements
+relativeLayout.animate().translationY(-200).setDuration(1000);
 
 
 
-
-        mRef = new Firebase(Config.FIREBASE_URL);
-        regButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-             Intent i = new Intent(MainActivity.this, SignUpActivity.class);
-                startActivity(i);
-                overridePendingTransition( android.R.anim.slide_in_left, android.R.anim.slide_out_right );
-
-            }
-        });
-        logButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRef = new Firebase(Config.FIREBASE_URL);
-
-                try {
-                    mUserId = mRef.getAuth().getUid();
-                } catch (Exception e) {
-                    loadLoginView();
-                   // System.out.println("error");
-                }
-
-            }
-        });
-
-    }
-
-
-    public void loadLoginView() {
-        Intent intent = new Intent(MainActivity.this, LogInActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        overridePendingTransition( android.R.anim.slide_in_left, android.R.anim.slide_out_right );
+        //calling welcome_fragment
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.scene_layout, welcomeFragment);
+        fragmentTransaction.commit();
+        //relativeLayout2.animate().translationY(-300).start();
     }
 
 

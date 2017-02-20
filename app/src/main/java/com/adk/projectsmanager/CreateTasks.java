@@ -54,7 +54,7 @@ public class CreateTasks extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_tasks);
+        /*setContentView(R.layout.activity_create_tasks);
 
 
         //registering activity_create_tasks.xml widgets
@@ -65,6 +65,7 @@ public class CreateTasks extends Activity {
         setDeadline = (TextView)findViewById(R.id.create_task_set_deadline);
         TextView cancelNewTask = (TextView) findViewById(R.id.cancel_new_task);
 
+*/
         final Intent intent = new Intent(this, Tasks.class);
 
 
@@ -73,7 +74,7 @@ public class CreateTasks extends Activity {
         String TaskDescription = addTaskDescription.getText().toString();
 
 
-        cancelNewTask.setOnClickListener(new View.OnClickListener() {
+       /* cancelNewTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(intent);
@@ -81,7 +82,7 @@ public class CreateTasks extends Activity {
                 overridePendingTransition( android.R.anim.slide_in_left, android.R.anim.slide_out_right );
             }
         });
-
+*/
 
         //set listeners for editTexts to check if empty
         addTaskName.addTextChangedListener(textWatcher);
@@ -91,6 +92,9 @@ public class CreateTasks extends Activity {
 
         // run once to disable if empty
         checkFieldsForEmptyValues();
+
+
+
 
 
 
@@ -119,7 +123,7 @@ public class CreateTasks extends Activity {
 
     //calling datePicker
     @SuppressWarnings("deprecation")
-    public void setDate(View view) {
+    public void setDate() {
         showDialog(999);
     }
 
@@ -157,7 +161,7 @@ public class CreateTasks extends Activity {
     }
 
     //./calling datePicker
-    //add conditions for EditTexts and datePicker according to witch the save button will be activated/disabled
+    //add conditions for EditTexts and datePicker according to which the save button will be activated/disabled
     private  void checkFieldsForEmptyValues(){
         String TaskName = addTaskName.getText().toString();
         String TaskOwner = addTaskOwner.getText().toString();
@@ -221,7 +225,7 @@ public class CreateTasks extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-
     }
+
 
 }

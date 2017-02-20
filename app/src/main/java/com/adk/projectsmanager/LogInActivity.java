@@ -25,7 +25,7 @@ public class LogInActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
+        setContentView(R.layout.login_fragment_layout);
 
         loginRegisterButton = (Button)findViewById(R.id.login_register);
         emailEditText = (EditText)findViewById(R.id.emailField);

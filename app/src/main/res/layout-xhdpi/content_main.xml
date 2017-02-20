@@ -9,37 +9,34 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main" tools:context=".MainActivity"
     android:id="@+id/root_view_main"
-   >
+    android:background="@color/colorAccent">
 
-    <Button
-        android:layout_width="300dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log in"
-        android:id="@+id/log_button"
-        android:background="@color/colorAccent"
-        android:textColor="@android:color/white"
-        android:layout_below="@+id/reg_button"
+        android:id="@+id/scene_holder"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="39dp" />
-
-    <Button
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:id="@+id/reg_button"
-        android:background="@color/colorAccent"
-        android:textColor="@android:color/white"
-        android:layout_below="@+id/logo"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="100dp"/>
+        android:layout_centerVertical="true">
 
     <ImageView
-        android:layout_width="500dp"
-        android:layout_height="300dp"
         android:id="@+id/logo"
         android:src="@drawable/logo"
-        android:layout_alignParentTop="true"
+
+        android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"/>
+        android:layout_width="290dp"
+        android:elevation="1dp"
+        android:layout_height="170dp" />
+
+    <RelativeLayout
+        android:layout_width="290dp"
+        android:id="@+id/scene_layout"
+
+        android:layout_height="200dp"
+        android:layout_alignTop="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="171dp">
+
+    </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

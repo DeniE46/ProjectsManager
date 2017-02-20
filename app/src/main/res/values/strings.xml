@@ -38,4 +38,7 @@
     <string name="hint_member_position">Position</string>
     <string name="hint_project_name">Position</string>
     <string name="hint_project_description">Position</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
