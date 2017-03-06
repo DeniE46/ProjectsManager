@@ -13,10 +13,12 @@ import java.util.List;
 
  class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>   {
 
-    private List<TeamMembers> teamMembersList;
+    public List<TasksModel> tasksList;
     private final static int FADE_DURATION = 1000; // in milliseconds
 
+     public TaskAdapter() {
 
+     }
 
 
      class MyViewHolder extends RecyclerView.ViewHolder{
@@ -41,8 +43,8 @@ import java.util.List;
 
 
     //Constructor
-     TaskAdapter(List<TeamMembers> teamMembersList){
-        this.teamMembersList = teamMembersList;
+     TaskAdapter(List<TasksModel> tasksList){
+        this.tasksList = tasksList;
     }
 
     @Override
@@ -58,44 +60,44 @@ import java.util.List;
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position){
        //statements of type holder.*.setText(tm.get*) set the text for the textView in cardView
-        TeamMembers tm = teamMembersList.get(position);
+        TasksModel tm = tasksList.get(position);
         holder.taskName.setText(tm.getTaskName());
-        holder.taskOwner.setText(tm.getTaskMember());
+        holder.taskOwner.setText(tm.getTaskOwner());
         holder.taskDescription.setText(tm.getTaskDescription());
 
-        String daysToGo = String.valueOf(tm.getTaskDaysLeft());
+        String daysToGo = String.valueOf(tm.getTimeRemaining());
 
         //checks how many days are left to deadline for a task and colors the cardView respectfully
-        if(tm.getFlag().equals("true")){
+        if(tm.getTaskIsCompleted().equals("true")){
             holder.taskStatus.setText(R.string.task_status_ready);
             holder.taskDaysLeft.setText(R.string.task_days_left);
             //silver
             holder.card.setCardBackgroundColor(Color.argb(190, 223, 230, 225));
         }
-        else if(tm.getFlag().equals("false")) {
+        else if(tm.getTaskIsCompleted().toString().equals("false")) {
 
             holder.taskStatus.setText(R.string.task_status_wip);
-            if (tm.getTaskDaysLeft() >= 10) {
+            if (tm.getTimeRemaining() >= 10) {
                 holder.taskDaysLeft.setText(daysToGo);
                 //green
                 holder.card.setCardBackgroundColor(Color.argb(190, 119, 253, 61));
             }
-            else if ((tm.getTaskDaysLeft() < 10) && (tm.getTaskDaysLeft() >= 5)) {
+            else if ((tm.getTimeRemaining() < 10) && (tm.getTimeRemaining() >= 5)) {
                 holder.taskDaysLeft.setText(daysToGo);
                 //yellow
                 holder.card.setCardBackgroundColor(Color.argb(190, 253, 247, 61));
             }
-            else if ((tm.getTaskDaysLeft() < 5) && (tm.getTaskDaysLeft() >= 3)) {
+            else if ((tm.getTimeRemaining() < 5) && (tm.getTimeRemaining() >= 3)) {
                 holder.taskDaysLeft.setText(daysToGo);
                 //orange
                 holder.card.setCardBackgroundColor(Color.argb(190, 253, 144, 61));
             }
-            else if (tm.getTaskDaysLeft() < 3 && tm.getTaskDaysLeft() >=0) {
+            else if (tm.getTimeRemaining() < 3 && tm.getTimeRemaining() >=0) {
                 holder.taskDaysLeft.setText(daysToGo);
                 //red
                 holder.card.setCardBackgroundColor(Color.argb(190, 253, 61, 61));
             }
-            else if(tm.getTaskDaysLeft() < 0){
+            else if(tm.getTimeRemaining() < 0){
                 holder.taskStatus.setText(R.string.task_status_expired);
                 holder.taskDaysLeft.setText(R.string.task_days_left);
                 //red
@@ -122,7 +124,7 @@ import java.util.List;
 
     @Override
     public int getItemCount() {
-        return teamMembersList.size();
+        return tasksList.size();
     }
 
 }

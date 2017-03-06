@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.adk.projectsmanager"
         minSdkVersion 21
@@ -26,7 +26,10 @@ android {
     }
 }
 
+
+
 dependencies {
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'com.github.florent37:materialtextfield:1.0.5'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.4.0'
@@ -36,6 +39,10 @@ dependencies {
     compile 'com.firebase:firebase-client-android:2.4.0'
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
     compile 'com.android.support:support-v4:23.4.0'
+    compile('com.mikepenz:fastadapter:1.5.2@aar') {
+        transitive = true
+    }
+    compile 'com.mikepenz:fastadapter-extensions:1.5.1@aar'
 
     testCompile 'junit:junit:4.12'
 }

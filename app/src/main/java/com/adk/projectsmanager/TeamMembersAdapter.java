@@ -16,7 +16,7 @@ import java.util.List;
 
  class TeamMembersAdapter extends RecyclerView.Adapter<TeamMembersAdapter.MyViewHolder>  {
 
-    private List<TeamMembers> teamMembersList;
+    public List<MembersModel> membersList;
     private final static int FADE_DURATION = 1000; // in milliseconds
 
 
@@ -41,8 +41,8 @@ import java.util.List;
 
 
     //Constructor
-     TeamMembersAdapter(List<TeamMembers> teamMembersList){
-        this.teamMembersList = teamMembersList;
+     TeamMembersAdapter(List<MembersModel> membersList){
+        this.membersList = membersList;
     }
 
     @Override
@@ -61,10 +61,10 @@ import java.util.List;
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position){
 
-        TeamMembers tm = teamMembersList.get(position);
-        holder.name.setText(tm.getName());
-        holder.occupation.setText(tm.getOccupation());
-        holder.PicId.setImageResource(tm.getPicId());
+        MembersModel membersModel = membersList.get(position);
+        holder.name.setText(membersModel.getName());
+        holder.occupation.setText(membersModel.getOccupation());
+        holder.PicId.setImageResource(membersModel.getPicId());
        // setFadeAnimation(holder.itemView);
     }
 
@@ -76,7 +76,7 @@ import java.util.List;
 
     @Override
     public int getItemCount() {
-        return teamMembersList.size();
+        return membersList.size();
     }
 
 }

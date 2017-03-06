@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 
@@ -19,7 +18,7 @@ import com.firebase.client.Firebase;
 public class MainActivity extends AppCompatActivity {
 
     WelcomeFragment welcomeFragment = new WelcomeFragment();
-   RelativeLayout relativeLayout;
+    RelativeLayout relativeLayout;
 
 
     @Override
@@ -29,11 +28,8 @@ public class MainActivity extends AppCompatActivity {
         Firebase.setAndroidContext(this);
 
         relativeLayout = (RelativeLayout)findViewById(R.id.scene_holder);
-        //relativeLayout2 = (RelativeLayout)findViewById(R.id.welcome_fragment_layout);
 
-relativeLayout.animate().translationY(-200).setDuration(1000);
-
-
+        relativeLayout.animate().translationY(-200).setDuration(1000);
 
         //calling welcome_fragment
         android.app.FragmentManager fragmentManager = getFragmentManager();
@@ -61,7 +57,7 @@ relativeLayout.animate().translationY(-200).setDuration(1000);
 
         switch (item.getItemId()) {
             case R.id.action_logout:
-                dialog_confirm_exit();
+                dialogConfirmExit();
                 return true;
         }
 
@@ -69,7 +65,7 @@ relativeLayout.animate().translationY(-200).setDuration(1000);
     }
 
 
-    public final void dialog_confirm_exit(){
+    public final void dialogConfirmExit(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.exit_app_title);
         builder.setMessage(R.string.exit_app_message);
@@ -99,7 +95,7 @@ relativeLayout.animate().translationY(-200).setDuration(1000);
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            dialog_confirm_exit();
+            dialogConfirmExit();
             return true;
         }
 

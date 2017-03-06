@@ -20,30 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Team"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Tasks"
-            android:label="@string/title_activity_tasks"
-            android:parentActivityName=".Team">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.adk.projectsmanager.Team" />
-        </activity>
-        <activity
-            android:name=".CreateTasks"
-            android:label="@string/title_activity_create_tasks"
-            android:parentActivityName=".Tasks">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.adk.projectsmanager.Tasks" />
-        </activity>
-        <activity android:name=".LogInActivity" />
-        <activity android:name=".SignUpActivity" />
         <activity android:name=".DataTabs"
             android:theme="@style/TabsTheme" />
+
     </application>
 
 </manifest>

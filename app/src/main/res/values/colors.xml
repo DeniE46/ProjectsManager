@@ -8,4 +8,7 @@
     <color name="tasks_status_color_yellow">#75FDF73D</color>
     <color name="tasks_status_color_orange">#75FD903D</color>
     <color name="tasks_status_color_red">#75FD3D3D</color>
+    <color name="appFactoryColor">#4ddacb</color>
+    <color name="appFactoryColord">#45c4b6</color>
+    <color name="appFactoryColorl">#53ebdb</color>
 </resources>
