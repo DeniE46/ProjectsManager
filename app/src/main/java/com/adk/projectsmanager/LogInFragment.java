@@ -28,7 +28,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.login_fragment_layout, container, false);
-
+    Firebase.setAndroidContext(getActivity());
     emailEditText = (EditText)v.findViewById(R.id.emailField);
     passwordEditText = (EditText)v.findViewById(R.id.passwordField);
     loginRegisterButton = (Button)v.findViewById(R.id.login_register);

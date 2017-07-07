@@ -1,35 +1,39 @@
 package com.adk.projectsmanager;
 
+
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.danimahardhika.cafebar.CafeBar;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.robertlevonyan.views.chip.Chip;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,126 +46,205 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public class TasksFragment extends Fragment implements View.OnClickListener{
+public class TasksFragment extends Fragment implements View.OnClickListener {
 
 
-    private List<TasksModel> tm = new ArrayList<>();
+
     private TaskAdapter taskAdapter;
-    CardView cardView;
-    TextView createTaskName, createTaskOwner,createTaskDeadline, createTaskDescription;
-    Button createTaskSubmit;
+    CardView uploadTaskCard;
+    EditText createTaskName, createTaskOwner, createTaskDescription, createTaskPeopleWorking;
+    Spinner createTaskPriority, createTaskDifficulty;
+    Button createTaskSubmit, createTaskDeadline;
     View parentLayout;
     public Firebase mRef;
     TabLayout tabLayout;
-    DataTabs dataTabs;
-    Firebase ref;
     ChildEventListener mChildEventListener;
-    View view;
-    RecyclerView recyclerView;
+    View fragmentView;
+
     TasksModel tasksModel;
     String uniqueNodeName;
-    int taskItemPosition;
+    public int taskItemPosition;
+    DataTabs dataTabs;
+    StatisticsChartFragment statistics;
+    static String taskFilter = "All";
+    CardView filterCard;
+    Chip allChip, wipChip, completedChip, deadlineChip, priorityChip, pauseChip;
+    RecyclerView recyclerView;
+    ArrayList<TasksModel> localTasksList;
+    private static final String LOCAL_TAG = ".TasksFragment";
+    final float CHIP_ALPHA_PRESSED = 0.7f;
+    final float CHIP_ALPHA = 1f;
+    long timeRemaining;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //checks if view is null so that if it is not the view will not be inflated again and the firebase data will not be duplicated
-        if (view == null) {
-            view = inflater.inflate(R.layout.activity_tasks, container, false);
-            Firebase.setAndroidContext(getActivity());
-            tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-            dataTabs = new DataTabs();
-            ref = new Firebase(TaskURL.tasksURL);
-            tasksModel = new TasksModel();
+        if (fragmentView == null) {
+            fragmentView = inflater.inflate(R.layout.activity_tasks, container, false);
 
-            cardView = (CardView)view.findViewById(R.id.card_test);
-            parentLayout = view.findViewById(R.id.root_view);
-            //checking if the view is null, if not hide it
-            if (cardView != null) {
-                cardView.setVisibility(View.GONE);
+
+            tabLayout = (TabLayout) fragmentView.findViewById(R.id.tabs);
+            dataTabs = new DataTabs();
+
+
+
+            if(savedInstanceState != null){
+                localTasksList = savedInstanceState.getParcelableArrayList("STATE_TASK_MODEL_LIST");
+            }
+            else{
+                localTasksList = new ArrayList<>();
+
+                syncTasks("All");
             }
 
+            taskAdapter = new TaskAdapter(localTasksList, this);
+            tasksModel = new TasksModel();
+            uploadTaskCard = (CardView) fragmentView.findViewById(R.id.upload_task_card);
+            filterCard = (CardView)fragmentView.findViewById(R.id.filter_card);
+            parentLayout = fragmentView.findViewById(R.id.root_view);
+
+            //checking if the view is null, if not hide it
 
 
-            createTaskName = (TextView)view.findViewById(R.id.create_task_name);
-            createTaskOwner = (TextView)view.findViewById(R.id.create_task_owner);
-            createTaskDeadline = (TextView)view.findViewById(R.id.create_task_deadline);
-            createTaskDescription = (TextView)view.findViewById(R.id.create_task_description);
-            createTaskSubmit = (Button)view.findViewById(R.id.create_task_submit);
+
+
+
+            statistics = new StatisticsChartFragment();
+
+            createTaskName = (EditText) fragmentView.findViewById(R.id.create_task_name);
+            createTaskOwner = (EditText) fragmentView.findViewById(R.id.create_task_owner);
+            createTaskDeadline = (Button) fragmentView.findViewById(R.id.create_task_deadline);
+            createTaskDescription = (EditText) fragmentView.findViewById(R.id.create_task_description);
+            createTaskDifficulty = (Spinner)fragmentView.findViewById(R.id.create_task_difficulty);
+            createTaskPriority = (Spinner)fragmentView.findViewById(R.id.create_task_priority);
+            createTaskPeopleWorking = (EditText)fragmentView.findViewById(R.id.create_task_people_working);
+
+            createTaskSubmit = (Button) fragmentView.findViewById(R.id.create_task_submit);
+
             createTaskDeadline.setOnClickListener(this);
+            createTaskDeadline.setText(currentDate());
             createTaskSubmit.setOnClickListener(this);
 
-            //creates an object to return true if touch is detected
-            final GestureDetector mGestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener() {
+            allChip = (Chip)fragmentView.findViewById(R.id.all_chip);
+            wipChip = (Chip)fragmentView.findViewById(R.id.wip_chip);
+            completedChip = (Chip)fragmentView.findViewById(R.id.complete_chip);
+            deadlineChip = (Chip)fragmentView.findViewById(R.id.deadline_chip);
+            priorityChip = (Chip)fragmentView.findViewById(R.id.priority_chip);
+            pauseChip = (Chip) fragmentView.findViewById(R.id.pause_chip);
+            allChip.setOnClickListener(this);
+            wipChip.setOnClickListener(this);
+            completedChip.setOnClickListener(this);
+            deadlineChip.setOnClickListener(this);
+            priorityChip.setOnClickListener(this);
+            pauseChip.setOnClickListener(this);
 
-                @Override public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-
-            });
-            //./creates an object to return true if touch is detected
-
-
-
-            syncTasks();
             Log.d("app", "calling sync tasks");
 
-
             //registering widgets, adapters, data structures and layouts
-            recyclerView = (RecyclerView) view.findViewById(R.id.rv);
-            taskAdapter = new TaskAdapter(tm);
+            recyclerView = (RecyclerView) fragmentView.findViewById(R.id.rv);
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-            if(recyclerView != null){
+            if (recyclerView != null) {
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setItemAnimator(new DefaultItemAnimator());
                 recyclerView.setAdapter(taskAdapter);
-                //intercepts onclick and gets position
-                //pos is int containing the position of the card view that is being clicked
-
-                recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-                    @Override
-                    public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
-                        View child = recyclerView.findChildViewUnder(motionEvent.getX(),motionEvent.getY());
-                        if(child!=null && mGestureDetector.onTouchEvent(motionEvent)){
-                            int pos = recyclerView.getChildAdapterPosition(child);
-                            //dialogTaskOptions(pos);
-                            taskOptions(pos);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public void onTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
-
-                    }
-
-                    @Override
-                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-                    }
-                });
-                //./intercepts onclick and gets position
             }
 
-            setHasOptionsMenu(true);
 
-            Firebase.setAndroidContext(getActivity());
+            setHasOptionsMenu(true);
             mRef = new Firebase(FirebaseConfig.FIREBASE_URL);
         }
 
+       // allChip.setOnSelectClickListener(this);
+        //wipChip.setOnClickListener(this);
 
-
-        return view;
+        ArrayAdapter<CharSequence> spinnerPriorityAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.task_spinner_priority, android.R.layout.simple_spinner_item);
+        spinnerPriorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        createTaskPriority.setAdapter(spinnerPriorityAdapter);
+        ArrayAdapter<CharSequence> spinnerDifficultyAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.task_spinner_difficulty, android.R.layout.simple_spinner_item);
+        spinnerDifficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        createTaskDifficulty.setAdapter(spinnerDifficultyAdapter);
+        return fragmentView;
     }
 
-    public void taskOptions(final int position){
+
+
+
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //TODO: save taskUploadCard as well as filterCard
+        outState.putParcelableArrayList("STATE_TASK_MODEL_LIST", localTasksList);
+    }
+
+    void chipsState(String chip){
+        switch(chip){
+            case "All":
+                allChip.setAlpha(CHIP_ALPHA_PRESSED);
+                wipChip.setAlpha(CHIP_ALPHA);
+                completedChip.setAlpha(CHIP_ALPHA);
+                deadlineChip.setAlpha(CHIP_ALPHA);
+                priorityChip.setAlpha(CHIP_ALPHA);
+                pauseChip.setAlpha(CHIP_ALPHA);
+                break;
+            case "WIP":
+                allChip.setAlpha(CHIP_ALPHA);
+                wipChip.setAlpha(CHIP_ALPHA_PRESSED);
+                completedChip.setAlpha(CHIP_ALPHA);
+                deadlineChip.setAlpha(CHIP_ALPHA);
+                priorityChip.setAlpha(CHIP_ALPHA);
+                pauseChip.setAlpha(CHIP_ALPHA);
+                break;
+            case "Completed":
+                allChip.setAlpha(CHIP_ALPHA);
+                wipChip.setAlpha(CHIP_ALPHA);
+                completedChip.setAlpha(CHIP_ALPHA_PRESSED);
+                deadlineChip.setAlpha(CHIP_ALPHA);
+                priorityChip.setAlpha(CHIP_ALPHA);
+                pauseChip.setAlpha(CHIP_ALPHA);
+                break;
+            case "Deadline":
+                allChip.setAlpha(CHIP_ALPHA);
+                wipChip.setAlpha(CHIP_ALPHA);
+                completedChip.setAlpha(CHIP_ALPHA);
+                deadlineChip.setAlpha(CHIP_ALPHA_PRESSED);
+                priorityChip.setAlpha(CHIP_ALPHA);
+                pauseChip.setAlpha(CHIP_ALPHA);
+                break;
+            case "Priority":
+                allChip.setAlpha(CHIP_ALPHA);
+                wipChip.setAlpha(CHIP_ALPHA);
+                completedChip.setAlpha(CHIP_ALPHA);
+                deadlineChip.setAlpha(CHIP_ALPHA);
+                priorityChip.setAlpha(CHIP_ALPHA_PRESSED);
+                pauseChip.setAlpha(CHIP_ALPHA);
+                break;
+            case "Paused":
+                allChip.setAlpha(CHIP_ALPHA);
+                wipChip.setAlpha(CHIP_ALPHA);
+                completedChip.setAlpha(CHIP_ALPHA);
+                deadlineChip.setAlpha(CHIP_ALPHA);
+                priorityChip.setAlpha(CHIP_ALPHA);
+                pauseChip.setAlpha(CHIP_ALPHA_PRESSED);
+                break;
+
+        }
+    }
+
+    public void taskOptions(final int position, final int which) {
         //TODO: some clean up in this method
-        final Firebase ref = new Firebase(TaskURL.tasksURL);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        final Firebase firebaseRef = new Firebase(TaskURL.tasksURL);
+        firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 List<String> IDList = new ArrayList<>();
@@ -170,70 +253,39 @@ public class TasksFragment extends Fragment implements View.OnClickListener{
                     IDList.add(child.getKey());
                     //used to be child.toString().substring(21,41)
                 }
-                final String uniqueNode = IDList.get(position);
+                uniqueNodeName = IDList.get(position);
                 taskItemPosition = position;
-                uniqueNodeName = uniqueNode;
-                //start of dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Task options");
-                builder.setItems(new CharSequence[]
-                                {"Delete task", "Task is completed"},
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
                                 // The 'which' argument contains the index position
                                 // of the selected item
                                 switch (which) {
                                     //case 0: deletes info in certain node specified by the position that is passed
                                     case 0:
                                         //values should be checked, if  null is returned the toast is displayed
-                                        Toast.makeText(getActivity(), "Task deleted", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getActivity(), "Task deleted", Toast.LENGTH_SHORT).show();
                                         // deletes task and its parent name from list
-                                        //deleting certain node can be done like this as well: ref.child(uniqueNode).child("Tasks").removeValue();
+                                        //deleting certain node can be done like this as well:
+                                        firebaseRef.child(uniqueNodeName).child("Tasks").removeValue();
                                         //uniqueNode needs better name, e.g. TimeStampNodeName, should check Firebase name
-                                        /*current method of data deletion:
-                                        1. delete data in Firebase
-                                        2. restart activity so that when it loads again the method that iterates through the data fills the list but without the element that
-                                        had been deleted, then the recycler view is filled using the data from the list thus eliminating the need for recycler view update and element removal
-                                        +simple
-                                        +it works
-                                        + no need to update objects
-                                        -not too professional
-                                        -flickering caused by activity restart
-                                        -has to iterate through the base after each deletion (if bad it will be because it may has to iterate through lots of information)
-                                       ####Can be improved by putting the code that restarts the activity in OnDataChange() method
-                                         future method of data deletion:
-                                         1. delete the data from Firebase
-                                         2. delete the element from the list using the corresponding position
-                                         3. delete the element in and update the recycler view to repopulate with updated data
-                                        +one iterating through Firebase's data is needed
-                                        +additional iterations may be planned (once in an hour for example)
-                                        +should improve the logic and the quality of the code (using native approach)
-                                        +remove the screen flickering caused by activity restart
-                                        -no real performance upgrade
-                                        -more code involved/more difficult to maintain
-                                        */
-                                        ref.child(uniqueNode).child("Tasks").child("task description").removeValue();
-                                        ref.child(uniqueNode).child("Tasks").child("task name").removeValue();
-                                        ref.child(uniqueNode).child("Tasks").child("task owner").removeValue();
-                                        ref.child(uniqueNode).child("Tasks").child("task status").removeValue();
-                                        ref.child(uniqueNode).child("Tasks").child("flag").removeValue();
+                                        //ref.child(uniqueNodeName).child("Tasks").child("task description").removeValue();
+                                        //ref.child(uniqueNodeName).child("Tasks").child("task name").removeValue();
+                                        //ref.child(uniqueNodeName).child("Tasks").child("task owner").removeValue();
+                                        //ref.child(uniqueNodeName).child("Tasks").child("task status").removeValue();
+                                        //ref.child(uniqueNodeName).child("Tasks").child("flag").removeValue();
 
+
+                                        Log.d("TasksFragment","removing "+position);
+                                        localTasksList.remove(position);
                                         taskAdapter.notifyItemRemoved(position);
-                                        tm.remove(position);
-                                        dialog.dismiss();
+
                                         break;
                                     //case 1: changes/modifies specific information in certain node specified by the position that is passed
                                     //can be used as a base to add modify task/member
                                     //basic modification should be: add option and modify the existing dialog to show modify option, which then calls
                                     //new dialog that loads information thanks to the position of the card, when this info is modified the information is saved just like flag updating
                                     case 1:
-                                        Toast.makeText(getActivity(), "Task completed", Toast.LENGTH_SHORT).show();
-                                        ref.child(uniqueNode).child("Tasks").child("flag").setValue("true");
-                                        refreshTask();
-                                        dialog.dismiss();
-
-                                        //./restarts activity
-
+                                        //Toast.makeText(getActivity(), "Task completed", Toast.LENGTH_SHORT).show();
+                                        firebaseRef.child(uniqueNodeName).child("Tasks").child("flag").setValue("Completed");
+                                        refreshTask(firebaseRef);
                                         break;
                                     // case 2: when "modify task" is selected in the dialog another dialog may appear to let the user decide what to modify:
                                     // title, owner (should be done with context menu)etc and the case should look like:
@@ -251,19 +303,11 @@ public class TasksFragment extends Fragment implements View.OnClickListener{
                                         Same thing will be done to Team activity, which may be converted to fragment as well, thus getting Team, Tasks and CreateTasks to fragments and call them on same activity
                                         at which point the LogIn and and Register may be fragments as well meaning the whole app may be built on single activity
                                     */
+                                    case 2:
+                                        firebaseRef.child(uniqueNodeName).child("Tasks").child("flag").setValue("Paused");
+                                        refreshTask(firebaseRef);
+                                        break;
                                 }
-                            }
-                        });
-
-                builder.setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.create().show();
-                //end of dialog
-
             }
 
             @Override
@@ -274,25 +318,76 @@ public class TasksFragment extends Fragment implements View.OnClickListener{
     }
 
 
-
-    //syncing with Firebase
-    public final void syncTasks(){
+    //syncing data from Firebase
+    public final void syncTasks(final String filter) {
+        if(!localTasksList.isEmpty()){
+            localTasksList.clear();
+        }
+        taskFilter = filter;
+        Firebase ref = new Firebase(TaskURL.tasksURL);
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 //fetching data from Firebase for task name, task owner, task status and task description
                 String taskName = (String) dataSnapshot.child("Tasks").child("task name").getValue();
                 String taskOwner = (String) dataSnapshot.child("Tasks").child("task owner").getValue();
-                String taskDateCreated = (String) dataSnapshot.child("Tasks").child("task status").getValue();
+                String taskDeadlineDate = (String) dataSnapshot.child("Tasks").child("task status").getValue();
                 String taskDescription = (String) dataSnapshot.child("Tasks").child("task description").getValue();
-                String completionFlag = (String)dataSnapshot.child("Tasks").child("flag").getValue();
-                Boolean taskIsCompleted = Boolean.valueOf(completionFlag);
+                String taskStatus = (String) dataSnapshot.child("Tasks").child("flag").getValue();
+                String taskPriority = (String) dataSnapshot.child("Tasks").child("task priority").getValue();
+
+                Log.d(LOCAL_TAG, "syncing objects from Firebase");
                 //./fetching data from Firebase for task name, task owner, task status, task description and flag
-                long timeRemaining = calculateDeadline(taskDateCreated);
-                Log.d("app", "adding elements");
-                prepareTeamMembersData(taskName, taskOwner, timeRemaining, taskDescription, taskIsCompleted);
-                /*./getting current date, transforming it to StringBuilder, then string,
-                 then date and comparing it to datePicker, then getting the difference in days*/
+                timeRemaining = calculateTimeLeft(taskDeadlineDate);
+                Log.i(LOCAL_TAG, "calculated time left" + taskDeadlineDate);
+
+                //filtering logic
+                if(filter.equals("All")){
+                    chipsState("All");
+                    localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                }
+                else if(filter.equals("Paused")){
+                    if(taskStatus.equals(filter)){
+                        chipsState("Paused");
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                    }
+                }
+                else if(filter.equals("Priority")){
+                    if(taskPriority.equals("High")){
+                        //TODO: sort the tasks by priority (highest to lowest)
+                        chipsState("Priority");
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                    }
+
+                }
+                else if(filter.equals("Deadline")){
+                    //TODO: the number should be chosen by the user
+                    if(timeRemaining <= 10){
+                        chipsState("Deadline");
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                    }
+
+                }
+                else{
+
+                    if(taskStatus.equals(filter)){
+                        chipsState(filter);
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                    }
+                }
+
+                CafeBar.builder(getActivity())
+                        .content("Filter for Tasks list set:")
+                        .neutralText(filter)
+                        .neutralColor(R.color.teal)
+                        .floating(true)
+                        .icon(R.drawable.filter_tasks, false)
+                        .show();
+
+                Log.i(LOCAL_TAG,"adding objects to localTasksList " + localTasksList.size());
+                taskAdapter.notifyDataSetChanged();
+
+
             }
 
             @Override
@@ -320,93 +415,115 @@ public class TasksFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    public void prepareTeamMembersData(String taskName, String taskOwner, long timeRemaining,  String taskDescription, Boolean taskIsCompleted) {
-        // TeamMembers teamMembers = new TeamMembers(name, occupancy, R.drawable.member);
-        tm.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskIsCompleted));
-        taskAdapter.notifyDataSetChanged();
 
-    }
 
-    public void updateTeamMembersData(int position, String taskName, String taskOwner, long timeRemaining,  String taskDescription, Boolean taskIsCompleted) {
-        tm.set(position, new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskIsCompleted));
-        taskAdapter.notifyItemChanged(position);
-    }
 
-    public void showDatePickerDialog(){
+
+    public void showDatePickerDialog() {
         DialogFragment dialogFragment = new DialogFragmentPicker();
         dialogFragment.show(getActivity().getFragmentManager(), "datePicker");
     }
 
 
-
     //add conditions for EditTexts and datePicker according to which the save button will be activated/disabled
-    private  void checkFieldsForEmptyValues(){
-        String TaskName = createTaskName.getText().toString();
-        String TaskOwner = createTaskOwner.getText().toString();
-        String deadline = createTaskDeadline.getText().toString();
-        String TaskDescription = createTaskDescription.getText().toString();
+    private void checkFieldsForEmptyValues() {
+        String taskName = createTaskName.getText().toString();
+        String taskOwner = createTaskOwner.getText().toString();
+        String taskDeadline = createTaskDeadline.getText().toString();
+        String taskDescription = createTaskDescription.getText().toString();
+        String taskDifficulty = createTaskDifficulty.getSelectedItem().toString();
+        String taskPriority = createTaskPriority.getSelectedItem().toString();
+        String taskPeopleWorking = createTaskPeopleWorking.getText().toString();
 
 
-        if(TaskName.equals("") | TaskOwner.equals("") | deadline.equals("") | TaskDescription.equals(""))
-        {
+        if (taskName.equals("") | taskOwner.equals("") | taskDeadline.equals("") | taskDescription.equals("") | taskDifficulty.equals("") | taskPriority.equals("") | taskPeopleWorking.equals("")) {
             //createTaskSubmit.setEnabled(false);
             //add icon to setError
-            if(TaskName.equals("")&& TaskOwner.equals("") && deadline.equals("") && TaskDescription.equals("")) {
+            if (taskName.equals("") && taskOwner.equals("") && taskDeadline.equals("") && taskDescription.equals("") && taskDifficulty.equals("") && taskPriority.equals("") && taskPeopleWorking.equals("")) {
                 createTaskName.setError("You need to enter a name for the task");
                 createTaskOwner.setError("Owner is not selected");
                 createTaskDeadline.setError("deadline is not selected");
                 createTaskDescription.setError("you need to add description");
-            }
-            else if(TaskName.equals("")){
+            } else if (taskName.equals("")) {
                 createTaskName.setError("You need to enter a name for the task");
             }
 
-            if(TaskOwner.equals(""))
-            {
+            if (taskOwner.equals("")) {
                 createTaskOwner.setError("Owner is not selected");
             }
-            if(TaskDescription.equals(""))
-            {
+            if (taskDescription.equals("")) {
                 createTaskDescription.setError("you need to add description");
             }
-            if(deadline.equals(""))
-            {
+            if (taskDeadline.equals("")) {
                 createTaskDeadline.setError("deadline is not selected");
             }
-        }
-
-
-        else
-        {
+            if (taskPeopleWorking.equals("")) {
+                createTaskPeopleWorking.setError("people are not selected");
+            }
+        } else {
             Toast.makeText(getActivity(), "Task uploaded", Toast.LENGTH_SHORT).show();
-            new TaskUploader().execute(TaskName,TaskOwner, deadline, TaskDescription);
-            cardView.setVisibility(View.GONE);
+            new TaskUploader().execute(taskName, taskOwner, taskDeadline, taskDescription, taskDifficulty, taskPriority, taskPeopleWorking);
+            uploadTaskCard.setVisibility(View.GONE);
             clearTaskFields();
         }
 
 
     }
 
-    public void clearTaskFields(){
+    public void clearTaskFields() {
         createTaskName.setText("");
         createTaskOwner.setText("");
-        createTaskDeadline.setText("");
+        createTaskDeadline.setText(currentDate());
         createTaskDescription.setText("");
+        createTaskDifficulty.setSelection(0);
+        createTaskPriority.setSelection(0);
+        createTaskPeopleWorking.setText("");
     }
+    public void clearFieldsErrors(){
+        createTaskName.setError(null);
+        createTaskOwner.setError(null);
+        createTaskDeadline.setError(null);
+        createTaskDescription.setError(null);
+        createTaskPeopleWorking.setError(null);
+    }
+
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
-            case(R.id.create_task_deadline):
+        switch (v.getId()) {
+            case (R.id.create_task_deadline):
                 showDatePickerDialog();
                 break;
-            case(R.id.create_task_submit):
-                checkFieldsForEmptyValues();
-
+            case (R.id.create_task_submit):
+                if(createTaskSubmit.getText().equals("Submit")){
+                    checkFieldsForEmptyValues();
+                    Toast.makeText(getActivity(), "Uploading...", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    //modifyTask(taskPosition);
+                    Toast.makeText(getActivity(), "Modifying...", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case (R.id.all_chip):
+                syncTasks("All");
+                break;
+            case (R.id.wip_chip):
+                syncTasks("WIP");
+                break;
+            case R.id.complete_chip:
+                syncTasks("Completed");
+                break;
+            case R.id.deadline_chip:
+                syncTasks("Deadline");
+                break;
+            case R.id.priority_chip:
+                syncTasks("Priority");
+                break;
+            case R.id.pause_chip:
+                syncTasks("Paused");
                 break;
         }
     }
-
 
 
 
@@ -416,39 +533,46 @@ public class TasksFragment extends Fragment implements View.OnClickListener{
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_add_task:
-                if(cardView.getVisibility() == View.VISIBLE){
-                    cardView.setVisibility(View.GONE);
-                }
-                else{
-                    cardView.setVisibility(View.VISIBLE);
+                //TODO:add animation
+               if (uploadTaskCard.getVisibility() == View.VISIBLE) {
+                    uploadTaskCard.setVisibility(View.GONE);
+                    clearFieldsErrors();
+                   clearTaskFields();
+                } else {
+
+                       createTaskSubmit.setText("Submit");
+
+                    uploadTaskCard.setVisibility(View.VISIBLE);
                 }
                 break;
+
             case R.id.action_logout:
                 returnToMainActivity();
                 break;
-
         }
-
         return super.onOptionsItemSelected(item);
     }
 
 
-    public void refreshTask(){
+    public void refreshTask(Firebase ref) {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String taskName = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task name").getValue();
                 String taskOwner = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task owner").getValue();
-                String taskDateCreated = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task status").getValue();
+                String taskDeadlineDate = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task status").getValue();
                 String taskDescription = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task description").getValue();
-                String completionFlag = (String)dataSnapshot.child(uniqueNodeName).child("Tasks").child("flag").getValue();
-                Boolean taskIsCompleted = Boolean.valueOf(completionFlag);
-                long timeRemaining = calculateDeadline(taskDateCreated);
-                updateTeamMembersData(taskItemPosition, taskName, taskOwner, timeRemaining, taskDescription, taskIsCompleted);
+                String taskStatus = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("flag").getValue();
+
+                long daysRemaining = calculateTimeLeft(taskDeadlineDate);
+                //updates the itemList in TaskAdapter with the "Completed" status
+                localTasksList.set(taskItemPosition, new TasksModel(taskName, taskOwner, daysRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                taskAdapter.notifyItemChanged(taskItemPosition);
             }
 
             @Override
@@ -460,35 +584,132 @@ public class TasksFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    public void returnToMainActivity(){
+    public void returnToMainActivity() {
         mRef.unauth();
-        Intent intent = new Intent (getActivity(), MainActivity.class);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
     }
 
-    long calculateDeadline(String taskDateCreated){
-           /*choosing format, getting current date, transforming it to StringBuilder, then string,
-                 then date and comparing it to datePicker, then getting the difference in days*/
-        Calendar calendar;
-        int year, month, day;
+    long calculateTimeLeft(String taskDateCreated) {
+           /*choosing format, getting current date, getting pickerDateTaskCreated,
+           then converting them to date object,
+           subtract and return the difference in days to get timeRemaining*/
+
         long diff = 0;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy", Locale.ENGLISH);
-        calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        String currentDateString = day + " " + (month+1) + " " + year;
-        try
-        {
-            Date currentDate = formatter.parse(currentDateString);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        String today = currentDate();
+        try {
+            //today
+            Date currentDate = formatter.parse(today);
             //deadline for the task:
-            Date pickerDate = formatter.parse(taskDateCreated);
-            diff = pickerDate.getTime() - currentDate.getTime();
-        } catch (ParseException e)
-        {
+            Date pickerDateTaskCreated = formatter.parse(taskDateCreated);
+            diff = pickerDateTaskCreated.getTime() - currentDate.getTime();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         //converting the difference into int
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
+
+    String currentDate(){
+        Calendar calendar;
+        int year, month, day;
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        return day + "/" + (month + 1) + "/" + year;
+    }
+
+
+    //inner class
+     class PopUpWindow  {
+
+        private final int POPUP_Y_OFFSET = 70;
+        private final int POPUP_Y_NEGATIVE_OFFSET = 190; //when the pop up has no space to appear in the card it appears atop
+
+
+         void showPopup(final int taskPosition, int popupLocation[]) {
+
+            Drawable myIcon = getActivity().getDrawable(R.drawable.popup_bg_negative);
+            View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_layout, null);
+            final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+            Button btnDismiss = (Button) popupView.findViewById(R.id.close);
+            Button deleteTaskButton = (Button) popupView.findViewById(R.id.delete_task_button);
+            Button completeTaskButton = (Button) popupView.findViewById(R.id.complete_task_button);
+            Button pauseTaskButton = (Button) popupView.findViewById(R.id.pause_task_button);
+            Button modifyTaskButton = (Button) popupView.findViewById(R.id.modify_task_button);
+            Log.d("popup window","popup called");
+            btnDismiss.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                }
+            });
+
+            deleteTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    taskOptions(taskPosition, 0);
+                    popupWindow.dismiss();
+                    if(!taskFilter.equals("All")){
+                        syncTasks("All");
+                        Toast.makeText(getActivity(), "Refreshed to all", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            completeTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    taskOptions(taskPosition, 1);
+                    popupWindow.dismiss();
+                    if(!taskFilter.equals("All")){
+                       // syncTasks("All");
+                        Toast.makeText(getActivity(), "Refreshed to all", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            pauseTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    taskOptions(taskPosition, 2);
+                    popupWindow.dismiss();
+                    if(!taskFilter.equals("All")){
+                        syncTasks("All");
+                        Toast.makeText(getActivity(), "Refreshed to all", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            modifyTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    createTaskSubmit.setText("Update");
+                    uploadTaskCard.setVisibility(View.VISIBLE);
+                    popupWindow.dismiss();
+                }
+            });
+
+            popupWindow.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
+            popupWindow.setHeight(200);
+
+            //x-width,y-height
+            if(popupLocation[1]>1500){
+                popupView.setBackground(myIcon);
+                popupWindow.showAsDropDown(popupView, 0, popupLocation[1]-POPUP_Y_NEGATIVE_OFFSET);
+            }
+            else{
+                popupWindow.showAsDropDown(popupView, 0, popupLocation[1]+POPUP_Y_OFFSET);
+            }
+            //TODO: Check this line:
+            popupWindow.setElevation(5);
+            popupWindow.setFocusable(true);
+            popupWindow.update();
+
+        }
+
+    }
+
 }

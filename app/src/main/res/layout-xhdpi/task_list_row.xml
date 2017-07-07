@@ -1,136 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+
+    <com.ramotion.foldingcell.FoldingCell
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/folding_cell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:clickable="false"
+        android:focusable="false">
+
+
+
+
+    <android.support.v7.widget.CardView android:layout_height="wrap_content" android:layout_width="match_parent"
+        android:id="@+id/cell_content_view" android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="420dp"
+            android:src="@drawable/test" />
+
+        <Button
+            android:id="@+id/collapse_content_view_cell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+    </android.support.v7.widget.CardView>
+
+
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cv"
-        android:clickable="true"
+        android:id="@+id/cell_title_view"
         android:elevation="40dp"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        >
 
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cv1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/rlayout"
-        android:padding="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/task_owner"
-            android:layout_below="@+id/textView9"
-            android:layout_alignRight="@+id/textView9"
-            android:layout_alignEnd="@+id/textView9" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/task_description"
-            android:layout_below="@+id/days_left"
+        <RelativeLayout
+            android:id="@+id/rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="159dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="38dp"/>
+            android:layout_below="@+id/cv1"
+            android:background="?android:attr/selectableItemBackground">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/days_left"
-            android:layout_marginTop="38dp"
-            android:layout_below="@+id/task_name"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/task_name"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="38dp" />
+            <RatingBar
+                android:id="@+id/ratingBar11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/view4"
+                android:scaleX="0.6"
+                android:scaleY="0.6" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Task name"
-            android:id="@+id/textView8"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp"
-            android:textColor="@color/colorAccent"/>
+            <ImageView
+                android:id="@+id/difficulty_gauge"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/view4"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/task_difficulty_indicator" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Task owner"
-            android:id="@+id/textView9"
-            android:textColor="@color/colorAccent"
-            android:layout_alignTop="@+id/textView8"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Days left"
-            android:id="@+id/textView10"
-            android:layout_below="@+id/task_name"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp"
-            android:textColor="@color/colorAccent"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Task description"
-            android:id="@+id/textView11"
-            android:layout_below="@+id/days_left"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="18dp"
-            android:textColor="@color/colorAccent"/>
+            <RelativeLayout
+                android:id="@+id/task_card_header"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/task_card_header">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Status"
-            android:id="@+id/textView6"
-            android:layout_alignTop="@+id/textView10"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:textColor="@color/colorAccent"/>
+                <TextView
+                    android:id="@+id/task_card_number"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/task_position_bg"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="0" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/task_status"
-            android:layout_above="@+id/task_description"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+                <TextView
+                    android:id="@+id/task_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="8dp"
+                    android:text="Task Name"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/white"
+                    android:textSize="26sp"
+                    android:layout_toEndOf="@+id/task_card_number"
+                    android:layout_toStartOf="@+id/expand_content_view_cell"/>
 
-    </RelativeLayout>
+                <Button
+                    android:id="@+id/expand_content_view_cell"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/task_card_icon_expand"
+
+                    android:clickable="true" />
+
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/task_owner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/difficulty_gauge"
+                android:layout_below="@+id/task_card_header"
+                android:paddingTop="10dp"
+                android:text="Owner Name" />
+
+            <TextView
+                android:id="@+id/task_deadline_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/task_owner"
+                android:layout_below="@+id/task_owner"
+                android:paddingTop="5dp"
+                android:text="Deadline" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/task_deadline_date"
+                android:maxLines="1"
+                android:rotation="-90"
+                android:text="Time Left"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/task_deadline_date"
+                android:layout_marginTop="5dp"
+                android:layout_toStartOf="@+id/task_deadline_color"
+                android:background="@android:color/darker_gray" />
+
+
+            <ImageView
+                android:id="@+id/task_deadline_color"
+                android:layout_width="60dp"
+                android:layout_height="150dp"
+                android:layout_alignBottom="@id/task_deadline_color"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/task_card_header" />
+
+
+
+        </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 
-</RelativeLayout>
+
+</com.ramotion.foldingcell.FoldingCell>

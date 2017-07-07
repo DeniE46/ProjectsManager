@@ -1,69 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_tasks" tools:context="com.adk.projectsmanager.Tasks" android:id="@+id/root_view"
+    tools:showIn="@layout/activity_tasks" tools:context="com.adk.projectsmanager.TasksFragment" android:id="@+id/root_view"
     android:animateLayoutChanges="true">
 
 
     <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="300dip"
-        android:id="@+id/card_test">
-
-        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:id="@+id/upload_task_card"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:animateLayoutChanges="true"
+            android:visibility="gone">
+            <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorAccent"
-        >
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/task_name_til"
-                android:theme="@style/Fields">
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Name"
-                    android:id="@+id/create_task_name" />
-            </android.support.design.widget.TextInputLayout>
+            android:background="@color/colorAccent">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/task_name_til"
-                android:id="@+id/linear_layout_first_row">
+                android:id="@+id/linear_layout_first_row"
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:weightSum="2">
 
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/task_owner_til"
+                    android:id="@+id/task_name_til"
                     android:theme="@style/Fields"
                     android:layout_weight="1">
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Task owner"
-                        android:id="@+id/create_task_owner" />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:theme="@style/Fields"
-                    android:id="@+id/task_priority_til">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Priority"
-                        android:id="@+id/create_task_priority" />
+                        android:id="@+id/create_task_name"
+                        android:hint="Name" />
                 </android.support.design.widget.TextInputLayout>
+
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/create_task_difficulty"
+                    style="@android:style/Widget.Material.Spinner.Underlined"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -72,34 +58,60 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linear_layout_second_row"
-                android:layout_below="@+id/linear_layout_first_row">
+                android:layout_below="@+id/linear_layout_first_row"
+                android:weightSum="2">
+
 
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/task_deadline_til"
+                    android:id="@+id/task_owner_til"
                     android:theme="@style/Fields"
                     android:layout_weight="1">
-
                     <EditText
-                        android:hint="Deadline: "
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/create_task_deadline" />
+                        android:id="@+id/create_task_owner"
+                        android:hint="Task owner" />
                 </android.support.design.widget.TextInputLayout>
+                <Spinner
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/create_task_priority"
+                        style="@android:style/Widget.Material.Spinner.Underlined"
+                        android:layout_weight="1" />
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linear_layout_third_row"
+                android:layout_below="@+id/linear_layout_second_row"
+                android:weightSum="2">
+                <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/create_task_deadline"
+                        android:textSize="20sp"
+                        android:background="@color/colorAccent"
+                        android:textColor="@android:color/white"
+                        android:layout_weight="1"/>
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:id="@+id/task_people_working_til"
                     android:layout_weight="1"
-                    android:theme="@style/Fields"
-                    android:id="@+id/task_placeholder_til">
+                    android:theme="@style/Fields">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Placeholder"
-                        android:id="@+id/create_task_placeholder" />
+                        android:id="@+id/create_task_people_working"
+                        android:inputType="number"
+                        android:hint="How many people" />
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
@@ -108,41 +120,125 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/task_description_til"
-
                 android:theme="@style/Fields"
-                android:layout_below="@+id/linear_layout_second_row">
+                android:layout_below="@+id/linear_layout_third_row">
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/create_task_description"
                     android:hint="Multi line description"
-                    android:inputType="textMultiLine"
-                    android:id="@+id/create_task_description" />
+                    android:inputType="textMultiLine" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:text="Submit"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 android:id="@+id/create_task_submit"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
                 android:background="@android:color/white"
-                android:textColor="@color/colorAccent"/>
-
+                android:textColor="@color/colorAccent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true" />
 
         </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/filter_card"
+        android:layout_below="@id/upload_task_card">
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chips_layout"
+            android:isScrollContainer="false"
+            android:layout_gravity="center_vertical"
+            android:scrollbars="none">
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp">
+            <com.robertlevonyan.views.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/all_chip"
+                android:layout_gravity="center"
+                android:layout_marginStart="11dp"
+                app:backgroundColor="@color/teal"
+                app:chipIcon="@drawable/filter_tasks"
+                app:hasIcon="true"
+                app:textColor="@android:color/white"
+                app:chipText="All"/>
+            <com.robertlevonyan.views.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/wip_chip"
+                android:layout_gravity="center"
+                android:layout_marginStart="11dp"
+                app:backgroundColor="@color/teal"
+                app:chipIcon="@drawable/filter_tasks"
+                app:hasIcon="true"
+                app:textColor="@android:color/white"
+                app:chipText="WIP"/>
+            <com.robertlevonyan.views.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/complete_chip"
+                android:layout_gravity="center"
+                android:layout_marginStart="11dp"
+                app:backgroundColor="@color/teal"
+                app:chipIcon="@drawable/filter_tasks"
+                app:chipText="Completed"
+                app:hasIcon="true"
+                app:textColor="@android:color/white" />
+            <com.robertlevonyan.views.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pause_chip"
+                android:layout_gravity="center"
+                android:layout_marginStart="11dp"
+                app:backgroundColor="@color/teal"
+                app:chipIcon="@drawable/filter_tasks"
+                app:chipText="On hold"
+                app:hasIcon="true"
+                app:textColor="@android:color/white"
+                />
+            <com.robertlevonyan.views.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/deadline_chip"
+                android:layout_gravity="center"
+                android:layout_marginStart="11dp"
+                app:backgroundColor="@color/teal"
+                app:chipIcon="@drawable/filter_tasks"
+                app:chipText="Deadline"
+                app:hasIcon="true"
+                app:textColor="@android:color/white" />
+            <com.robertlevonyan.views.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/priority_chip"
+                android:layout_gravity="center"
+                android:layout_marginStart="11dp"
+                app:backgroundColor="@color/teal"
+                app:chipIcon="@drawable/filter_tasks"
+                app:chipText="Priority"
+                app:hasIcon="true"
+                app:textColor="@android:color/white" />
+        </LinearLayout>
+        </HorizontalScrollView>
     </android.support.v7.widget.CardView>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        android:layout_below="@+id/card_test"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentBottom="true"
+
+        android:layout_alignParentEnd="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layout_below="@id/filter_card"/>
 
 </RelativeLayout>

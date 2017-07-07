@@ -1,10 +1,13 @@
 package com.adk.projectsmanager;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StatisticsChartFragment extends Fragment implements OnChartValueSelectedListener {
 
@@ -30,16 +34,44 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
     BarData data;
     ArrayList<BarEntry> barGroup1;
     ArrayList<String> list;
-    LoadData loadData;
+    //LoadData loadData;
+    //TasksModel tasksModel;
+    ViewPager viewPager;
+    TaskAdapter taskAdapter;
+    List<TasksModel> tasksModelList = new ArrayList<>();
+    TasksFragment tasksFragment;
+    //Load data for barChart
+    static int teamMembersValue, topPriorityValue, WIPValue, CompletedValue, DeadlineValue, onHoldValue;
+    static int deadlineDays;
+    static String accentLight, accentDark;
+    FilterListener filterListener;
 
+    public interface FilterListener{
+         void setFilter(String filterWIP);
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            filterListener = (FilterListener) context;
+        }
+        catch (ClassCastException e){
+            throw new ClassCastException(context.toString());
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.statistics_chart, container, false);
         barChart = (BarChart)view.findViewById(R.id.barchart);
+        //tasksModel = new TasksModel();
+        viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+        //taskAdapter = new TaskAdapter(tasksModelList, getActivity());
         //reference to LoadData class to load the necessary data
-        loadData = new LoadData();
+        //loadData = new LoadData();
         //hides titles and background
         //barChart.getXAxis().setEnabled(false);
         //barChart.getAxisLeft().setEnabled(false);
@@ -50,19 +82,19 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
 
         barGroup1 = new ArrayList<>();
         barGroup1.add(new BarEntry(8, 0));
-        barGroup1.add(new BarEntry(15, 1));
-        barGroup1.add(new BarEntry(5, 2));
-        barGroup1.add(new BarEntry(20, 3));
-        barGroup1.add(new BarEntry(15, 4));
-        barGroup1.add(new BarEntry(19, 5));
+        barGroup1.add(new BarEntry(19, 1));
+        barGroup1.add(new BarEntry(WIPValue, 2));
+        barGroup1.add(new BarEntry(CompletedValue, 3));
+        barGroup1.add(new BarEntry(14, 4));
+        barGroup1.add(new BarEntry(16, 5));
 
         list = new ArrayList<>();
         list.add("Team members");
         list.add("Top priority");
-        list.add("WIP");
+        list.add("Work in progress");
         list.add("Completed");
-        list.add("Deadline");
         list.add("On hold");
+        list.add("Deadline");
 
         barDataSet = new BarDataSet(barGroup1, "Project statistics");
         data = new BarData(list, barDataSet);
@@ -92,6 +124,10 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
         barDataSet.setValueTextSize(10f);
         //hides values
         barDataSet.setDrawValues(true);
+        //forces all labels from list object to be visible
+        barChart.getXAxis().setLabelsToSkip(0);
+
+        tasksFragment = new TasksFragment();
 
         return view;
     }
@@ -106,10 +142,36 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
 
     @Override
     public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-        Toast.makeText(getActivity(), barGroup1.indexOf(e)+"", Toast.LENGTH_SHORT).show();
-    }
-
-
+        int chart = barGroup1.indexOf(e);
+        switch(chart) {
+            case 0:
+                //Team members
+                filterListener.setFilter("Members");
+                break;
+            case 1:
+                //Top priority
+                filterListener.setFilter("Priority");
+                break;
+            case 2:
+                //WIP
+                filterListener.setFilter("WIP");
+                break;
+            case 3:
+                //Completed
+                filterListener.setFilter("Completed");
+                break;
+            case 4:
+                //On hold
+                filterListener.setFilter("Pause");
+                break;
+            case 5:
+                //Deadline
+                //TODO: set a deadline
+                filterListener.setFilter("Deadline");
+                break;
+        }
+        viewPager.setCurrentItem(2);
+        }
 
 
     @Override
@@ -120,98 +182,10 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
 
 
     //class that provides data for the graphs and by using setters the titles and values are loaded into the bars
+
     public class LoadData{
         //String teamMembers, topPriority, WIP, Completed, Deadline, onHold;
-        int teamMembersValue, topPriorityValue, WIPValue, CompletedValue, DeadlineValue, onHoldValue;
-        int deadlineDays;
-        String accentLight, accentDark;
-
-        public LoadData(int teamMembersValue, String accentDark, String accentLight, int deadlineDays, int onHoldValue, int deadlineValue, int completedValue, int WIPValue, int topPriorityValue) {
-            this.teamMembersValue = teamMembersValue;
-            this.accentDark = accentDark;
-            this.accentLight = accentLight;
-            this.deadlineDays = deadlineDays;
-            this.onHoldValue = onHoldValue;
-            DeadlineValue = deadlineValue;
-            CompletedValue = completedValue;
-            this.WIPValue = WIPValue;
-            this.topPriorityValue = topPriorityValue;
-        }
-
-        LoadData() {
-        }
-
-        int getTeamMembersValue() {
-            return teamMembersValue;
-        }
-
-        String getAccentDark() {
-            return accentDark;
-        }
-
-        String getAccentLight() {
-            return accentLight;
-        }
-
-        int getDeadlineDays() {
-            return deadlineDays;
-        }
-
-        int getOnHoldValue() {
-            return onHoldValue;
-        }
-
-        int getDeadlineValue() {
-            return DeadlineValue;
-        }
-
-        int getCompletedValue() {
-            return CompletedValue;
-        }
-
-        int getWIPValue() {
-            return WIPValue;
-        }
-
-        int getTopPriorityValue() {
-            return topPriorityValue;
-        }
-
-        public void setTeamMembersValue(int teamMembersValue) {
-            this.teamMembersValue = teamMembersValue;
-        }
-
-        public void setAccentDark(String accentDark) {
-            this.accentDark = accentDark;
-        }
-
-        public void setAccentLight(String accentLight) {
-            this.accentLight = accentLight;
-        }
-
-        public void setDeadlineDays(int deadlineDays) {
-            this.deadlineDays = deadlineDays;
-        }
-
-        public void setOnHoldValue(int onHoldValue) {
-            this.onHoldValue = onHoldValue;
-        }
-
-        public void setDeadlineValue(int deadlineValue) {
-            DeadlineValue = deadlineValue;
-        }
-
-        public void setCompletedValue(int completedValue) {
-            CompletedValue = completedValue;
-        }
-
-        public void setWIPValue(int WIPValue) {
-            this.WIPValue = WIPValue;
-        }
-
-        public void setTopPriorityValue(int topPriorityValue) {
-            this.topPriorityValue = topPriorityValue;
-        }
     }
+
 }
 

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/popup"
+    android:background="@drawable/popup_bg"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp"
+        android:text="Update library:" />
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="36dp"
+        android:id="@+id/close"
+        android:layout_above="@+id/linearLayout2"
+        android:layout_alignEnd="@+id/linearLayout2"
+        android:background="@android:drawable/ic_menu_close_clear_cancel" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout2">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/complete_task_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:text="Done"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pause_task_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:text="Pause"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/delete_task_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:text="Delete"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/modify_task_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:text="Modify" />
+
+    </LinearLayout>
+
+</RelativeLayout>

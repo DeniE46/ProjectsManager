@@ -4,11 +4,14 @@
     <color name="colorPrimaryDark">#4ddacb</color>
     <color name="colorAccent">#4ddacb</color>
     <color name="tasks_status_color_silver">#75DFE6E1</color>
-    <color name="tasks_status_color_green">#7577FD3D</color>
+    <color name="tasks_status_color_green">#77fd3d</color>
     <color name="tasks_status_color_yellow">#75FDF73D</color>
     <color name="tasks_status_color_orange">#75FD903D</color>
     <color name="tasks_status_color_red">#75FD3D3D</color>
     <color name="appFactoryColor">#4ddacb</color>
     <color name="appFactoryColord">#45c4b6</color>
     <color name="appFactoryColorl">#53ebdb</color>
+    <color name="teal">#008080</color>
+    <color name="task_chip_filter">#83E6DA</color>
+    <color name="task_card_header">#83E6DA</color>
 </resources>

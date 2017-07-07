@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +31,10 @@ StringBuilder stringBuilder;
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
         monthOfYear = monthOfYear+1;
-        stringBuilder = new StringBuilder().append(dayOfMonth).append(" ")
-                .append(monthOfYear).append(" ").append(year);
+        stringBuilder = new StringBuilder().append(dayOfMonth).append("/")
+                .append(monthOfYear).append("/").append(year);
         String showTaskDeadline = stringBuilder.toString();
-        TextView setTaskDeadline = (TextView)getActivity().findViewById(R.id.create_task_deadline);
+        Button setTaskDeadline = (Button) getActivity().findViewById(R.id.create_task_deadline);
         setTaskDeadline.setText(showTaskDeadline);
 
 

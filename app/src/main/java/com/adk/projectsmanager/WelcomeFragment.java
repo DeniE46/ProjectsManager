@@ -26,6 +26,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
     View v = inflater.inflate(R.layout.welcome_fragment_layout, container, false);
+
         relativeLayout =(RelativeLayout)v.findViewById(R.id.welcome_fragment_layout);
         LogIn = (Button)v.findViewById(R.id.welcome_fragment_login);
         Register = (Button)v.findViewById(R.id.welcome_fragment_register);

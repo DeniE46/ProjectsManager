@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +46,8 @@ public class MembersFragment extends Fragment {
     private String tasksUrl;
     View parentLayout;
     View view;
-
+    TasksFragment tasksFragment;
+    ViewPager viewPager;
 
     @Nullable
     @Override
@@ -65,6 +67,9 @@ public class MembersFragment extends Fragment {
             parentLayout = view.findViewById(R.id.root_view);
 
             setHasOptionsMenu(true);
+
+            //tasksFragment = new TasksFragment();
+            viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
             Firebase.setAndroidContext(getActivity());
             mRef = new Firebase(FirebaseConfig.FIREBASE_URL);

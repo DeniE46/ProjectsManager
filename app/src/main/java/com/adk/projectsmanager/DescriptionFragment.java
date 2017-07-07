@@ -2,11 +2,13 @@ package com.adk.projectsmanager;
 
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -38,6 +40,9 @@ public class DescriptionFragment extends Fragment {
     String nameProject;
     String descriptionProject;
     StatisticsChartFragment statisticsChartFragment;
+    ViewPager viewPager;
+
+
 
 
     @Nullable
@@ -48,6 +53,7 @@ public class DescriptionFragment extends Fragment {
         projectDescription = (TextView)view.findViewById(R.id.view_project_description);
         statisticsChartFragment = new StatisticsChartFragment();
         setHasOptionsMenu(true);
+        viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
         Firebase.setAndroidContext(getActivity());
         mRef = new Firebase(FirebaseConfig.FIREBASE_URL);
@@ -168,7 +174,7 @@ public class DescriptionFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_add_description:
-                dialogCreateDescription();
+               dialogCreateDescription();
                 break;
             case R.id.action_logout:
                 returnToMainActivity();

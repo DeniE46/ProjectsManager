@@ -26,14 +26,20 @@ public class TaskUploader extends AsyncTask<String, String, Integer> {
         String taskOwner = params[1];
         String taskDeadline = params[2];
         String taskDescription = params[3];
-        String taskFlag = "false";
+        String taskDifficulty = params[4];
+        String taskPriority = params[5];
+        String taskPeopleWorking = params[6];
+        String taskStatus = "WIP";
 
         Map<String, Object> taskData = new HashMap<>();
         taskData.put("task name", taskName);
         taskData.put("task owner", taskOwner);
         taskData.put("task status", taskDeadline);
         taskData.put("task description", taskDescription);
-        taskData.put("flag", taskFlag);
+        taskData.put("flag", taskStatus);
+        taskData.put("task difficulty", taskDifficulty);
+        taskData.put("task priority", taskPriority);
+        taskData.put("task people working", taskPeopleWorking);
         new Firebase(TaskURL.tasksURL)
                 .push()
                 .child("Tasks")

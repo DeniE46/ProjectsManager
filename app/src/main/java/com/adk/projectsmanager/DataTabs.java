@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 
@@ -23,17 +24,19 @@ import java.util.List;
 
 import static android.support.design.widget.TabLayout.MODE_SCROLLABLE;
 
-public class DataTabs extends AppCompatActivity {
+public class DataTabs extends AppCompatActivity implements StatisticsChartFragment.FilterListener {
 
     Toolbar toolbar;
     TabLayout tabLayout;
     ViewPager viewPager;
-    private int[] icons = {R.drawable.add_description, R.drawable.add_member, R.drawable.add_new_tasks, R.drawable.icon_calendar, R.drawable.icon_notes};
     public Firebase mRef;
     AppBarLayout appBarLayout;
     private String mUserId;
     FirebaseConfig firebaseConfig;
     String descriptionURL, membersURL, tasksURL;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +48,13 @@ public class DataTabs extends AppCompatActivity {
         tabLayout = (TabLayout)findViewById(R.id.tabs);
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams)toolbar.getLayoutParams();
         firebaseConfig = new FirebaseConfig();
+
+
         params.setScrollFlags(0);
         appBarLayout.setElevation(0);
+        viewPager.setElevation(0);
+
+
 
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null){
@@ -54,9 +62,11 @@ public class DataTabs extends AppCompatActivity {
         }
 
             setupViewPager(viewPager);
+        //TODO: convert all check to this:
         assert tabLayout != null;
         tabLayout.setupWithViewPager(viewPager);
         //tabLayout.setVisibility(View.GONE);
+        //getSupportActionBar().hide();
 
         //mRef is used to logout of the activity when back button is pressed
         Firebase.setAndroidContext(this);
@@ -73,16 +83,10 @@ public class DataTabs extends AppCompatActivity {
         firebaseConfig.setTasksURL(tasksURL);
 
 
-        setupTabIcons();
+
     }
 
-    private void setupTabIcons() {
-        tabLayout.getTabAt(0).setIcon(icons[0]);
-        tabLayout.getTabAt(1).setIcon(icons[1]);
-        tabLayout.getTabAt(2).setIcon(icons[2]);
-        tabLayout.getTabAt(3).setIcon(icons[3]);
-        tabLayout.getTabAt(4).setIcon(icons[4]);
-    }
+
 
 
     private void setupViewPager(ViewPager viewPager){
@@ -95,6 +99,17 @@ public class DataTabs extends AppCompatActivity {
         viewPager.setAdapter(viewPagerAdapter);
 
     }
+
+    @Override
+    public void setFilter(String filterWIP) {
+        //TasksFragment tasksFragment = new TasksFragment();
+        //tasksFragment.setFilter(filterWIP);
+
+        TasksFragment.taskFilter = filterWIP;
+    }
+
+
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter{
     private final List<Fragment> mFragmentList = new ArrayList<>();

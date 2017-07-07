@@ -1,20 +1,51 @@
 package com.adk.projectsmanager;
 
-/**
- * Created by DeniE46 on 3/1/2017.
- */
 
-public class TasksModel {
-    private String taskName, taskOwner, taskDescription;
-    private Boolean taskIsCompleted;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class TasksModel implements Parcelable {
+    private String taskName, taskOwner, taskDescription, taskDeadlineDate, taskDifficulty, taskPriority, taskPeopleWorking;
+    String taskStatus;
     private long timeRemaining;
 
-    public TasksModel(String taskName, String taskOwner, long timeRemaining, String taskDescription, Boolean taskIsCompleted) {
+    boolean filterWIP = false;
+    boolean filterCompleted = false;
+
+    public boolean isFilterWIP() {
+        return filterWIP;
+    }
+
+    public void setFilterWIP(boolean filterWIP) {
+        this.filterWIP = filterWIP;
+    }
+
+    public boolean isFilterCompleted() {
+        return filterCompleted;
+    }
+
+    public void setFilterCompleted(boolean filterCompleted) {
+        this.filterCompleted = filterCompleted;
+    }
+
+    public TasksModel(boolean filterWIP, boolean filterCompleted) {
+
+        this.filterWIP = filterWIP;
+        this.filterCompleted = filterCompleted;
+    }
+
+
+
+    public TasksModel(String taskName, String taskOwner, long timeRemaining, String taskDescription, String taskStatus, String taskDeadlineDate) {
         this.taskName = taskName;
         this.taskOwner = taskOwner;
         this.timeRemaining = timeRemaining;
-        this.taskIsCompleted = taskIsCompleted;
+        this.taskStatus = taskStatus;
         this.taskDescription = taskDescription;
+        this.taskDeadlineDate = taskDeadlineDate;
+
 
     }
 
@@ -35,31 +66,38 @@ public class TasksModel {
         return taskDescription;
     }
 
-    public Boolean getTaskIsCompleted() {
-        return taskIsCompleted;
+    public String getTaskStatus() {
+        return taskStatus;
     }
 
     public long getTimeRemaining() {
         return timeRemaining;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public String getTaskDeadlineDate() {
+        return taskDeadlineDate;
     }
 
-    public void setTaskOwner(String taskOwner) {
-        this.taskOwner = taskOwner;
+    public String getTaskDifficulty() {
+        return taskDifficulty;
     }
 
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
+    public String getTaskPriority() {
+        return taskPriority;
     }
 
-    public void setTaskIsCompleted(Boolean taskIsCompleted) {
-        this.taskIsCompleted = taskIsCompleted;
+    public String getTaskPeopleWorking() {
+        return taskPeopleWorking;
     }
 
-    public void setTimeRemaining(long timeRemaining) {
-        this.timeRemaining = timeRemaining;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }
