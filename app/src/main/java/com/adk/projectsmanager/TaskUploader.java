@@ -1,7 +1,6 @@
 package com.adk.projectsmanager;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 
@@ -30,6 +29,7 @@ public class TaskUploader extends AsyncTask<String, String, Integer> {
         String taskPriority = params[5];
         String taskPeopleWorking = params[6];
         String taskStatus = "WIP";
+        String taskIndex = params[7];
 
         Map<String, Object> taskData = new HashMap<>();
         taskData.put("task name", taskName);
@@ -40,17 +40,17 @@ public class TaskUploader extends AsyncTask<String, String, Integer> {
         taskData.put("task difficulty", taskDifficulty);
         taskData.put("task priority", taskPriority);
         taskData.put("task people working", taskPeopleWorking);
+        taskData.put("task owner index", taskIndex);
         new Firebase(TaskURL.tasksURL)
                 .push()
                 .child("Tasks")
                 .setValue(taskData);
-
         return null;
     }
 
     @Override
     protected void onPostExecute(Integer integer) {
-        //Toast.makeText(TaskUploader.this, "Done", Toast.LENGTH_SHORT).show();
+        //TODO: add CoffeeBar to notify about the uploaded task or add progress bar
         super.onPostExecute(integer);
     }
 

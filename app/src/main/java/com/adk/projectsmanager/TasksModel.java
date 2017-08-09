@@ -4,47 +4,28 @@ package com.adk.projectsmanager;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 public class TasksModel implements Parcelable {
     private String taskName, taskOwner, taskDescription, taskDeadlineDate, taskDifficulty, taskPriority, taskPeopleWorking;
     String taskStatus;
     private long timeRemaining;
 
-    boolean filterWIP = false;
-    boolean filterCompleted = false;
-
-    public boolean isFilterWIP() {
-        return filterWIP;
-    }
-
-    public void setFilterWIP(boolean filterWIP) {
-        this.filterWIP = filterWIP;
-    }
-
-    public boolean isFilterCompleted() {
-        return filterCompleted;
-    }
-
-    public void setFilterCompleted(boolean filterCompleted) {
-        this.filterCompleted = filterCompleted;
-    }
-
-    public TasksModel(boolean filterWIP, boolean filterCompleted) {
-
-        this.filterWIP = filterWIP;
-        this.filterCompleted = filterCompleted;
-    }
 
 
 
-    public TasksModel(String taskName, String taskOwner, long timeRemaining, String taskDescription, String taskStatus, String taskDeadlineDate) {
+
+
+
+
+    public TasksModel(String taskName, String taskOwner, long timeRemaining, String taskDescription, String taskStatus, String taskDeadlineDate, String taskPriority, String taskPeopleWorking, String taskDifficulty) {
         this.taskName = taskName;
         this.taskOwner = taskOwner;
         this.timeRemaining = timeRemaining;
         this.taskStatus = taskStatus;
         this.taskDescription = taskDescription;
         this.taskDeadlineDate = taskDeadlineDate;
+        this.taskPriority = taskPriority;
+        this.taskPeopleWorking = taskPeopleWorking;
+        this.taskDifficulty = taskDifficulty;
 
 
     }
@@ -99,5 +80,10 @@ public class TasksModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
+    }
+
+    //adding toString() to provide what to display for spinners binding lists that implement this model
+    public String toString(){
+        return taskName;
     }
 }

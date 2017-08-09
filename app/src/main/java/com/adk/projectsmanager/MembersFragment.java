@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class MembersFragment extends Fragment {
 
-    private List<MembersModel> membersList = new ArrayList<>();
+    List<MembersModel> membersList = new ArrayList<>();
     private TeamMembersAdapter teamMembersAdapter;
 
     public Firebase mRef;

@@ -17,7 +17,6 @@ import java.util.List;
  class TeamMembersAdapter extends RecyclerView.Adapter<TeamMembersAdapter.MyViewHolder>  {
 
     public List<MembersModel> membersList;
-    private final static int FADE_DURATION = 1000; // in milliseconds
 
 
      class MyViewHolder extends RecyclerView.ViewHolder{
@@ -40,7 +39,7 @@ import java.util.List;
     }
 
 
-    //Constructor
+
      TeamMembersAdapter(List<MembersModel> membersList){
         this.membersList = membersList;
     }
@@ -65,14 +64,9 @@ import java.util.List;
         holder.name.setText(membersModel.getName());
         holder.occupation.setText(membersModel.getOccupation());
         holder.PicId.setImageResource(membersModel.getPicId());
-       // setFadeAnimation(holder.itemView);
+
     }
 
-    private void setFadeAnimation(View view) {
-        AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(FADE_DURATION);
-        view.startAnimation(anim);
-    }
 
     @Override
     public int getItemCount() {

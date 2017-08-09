@@ -15,7 +15,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:animateLayoutChanges="true"
-            android:visibility="gone">
+            android:visibility="visible">
             <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,18 +62,15 @@
                 android:weightSum="2">
 
 
-                <android.support.design.widget.TextInputLayout
+
+
+                <Spinner
+                    android:id="@+id/set_task_owner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/task_owner_til"
-                    android:theme="@style/Fields"
-                    android:layout_weight="1">
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/create_task_owner"
-                        android:hint="Task owner" />
-                </android.support.design.widget.TextInputLayout>
+                    style="@android:style/Widget.Material.Spinner.Underlined"
+                    android:layout_weight="1"/>
+
                 <Spinner
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

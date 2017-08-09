@@ -3,6 +3,7 @@ package com.adk.projectsmanager;
 
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,8 +53,8 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
     private TaskAdapter taskAdapter;
     CardView uploadTaskCard;
-    EditText createTaskName, createTaskOwner, createTaskDescription, createTaskPeopleWorking;
-    Spinner createTaskPriority, createTaskDifficulty;
+    EditText createTaskName, createTaskDescription, createTaskPeopleWorking;
+    Spinner createTaskOwner, createTaskPriority, createTaskDifficulty;
     Button createTaskSubmit, createTaskDeadline;
     View parentLayout;
     public Firebase mRef;
@@ -80,12 +81,14 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //checks if view is null so that if it is not the view will not be inflated again and the firebase data will not be duplicated
+        //TODO: leave only firebase and data-related code in this if statement, see what needs to stay
         if (fragmentView == null) {
             fragmentView = inflater.inflate(R.layout.activity_tasks, container, false);
 
@@ -110,16 +113,11 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             filterCard = (CardView)fragmentView.findViewById(R.id.filter_card);
             parentLayout = fragmentView.findViewById(R.id.root_view);
 
-            //checking if the view is null, if not hide it
-
-
-
-
 
             statistics = new StatisticsChartFragment();
 
             createTaskName = (EditText) fragmentView.findViewById(R.id.create_task_name);
-            createTaskOwner = (EditText) fragmentView.findViewById(R.id.create_task_owner);
+            createTaskOwner = (Spinner) fragmentView.findViewById(R.id.set_task_owner);
             createTaskDeadline = (Button) fragmentView.findViewById(R.id.create_task_deadline);
             createTaskDescription = (EditText) fragmentView.findViewById(R.id.create_task_description);
             createTaskDifficulty = (Spinner)fragmentView.findViewById(R.id.create_task_difficulty);
@@ -132,18 +130,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             createTaskDeadline.setText(currentDate());
             createTaskSubmit.setOnClickListener(this);
 
-            allChip = (Chip)fragmentView.findViewById(R.id.all_chip);
-            wipChip = (Chip)fragmentView.findViewById(R.id.wip_chip);
-            completedChip = (Chip)fragmentView.findViewById(R.id.complete_chip);
-            deadlineChip = (Chip)fragmentView.findViewById(R.id.deadline_chip);
-            priorityChip = (Chip)fragmentView.findViewById(R.id.priority_chip);
-            pauseChip = (Chip) fragmentView.findViewById(R.id.pause_chip);
-            allChip.setOnClickListener(this);
-            wipChip.setOnClickListener(this);
-            completedChip.setOnClickListener(this);
-            deadlineChip.setOnClickListener(this);
-            priorityChip.setOnClickListener(this);
-            pauseChip.setOnClickListener(this);
+
 
             Log.d("app", "calling sync tasks");
 
@@ -162,9 +149,25 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             mRef = new Firebase(FirebaseConfig.FIREBASE_URL);
         }
 
-       // allChip.setOnSelectClickListener(this);
-        //wipChip.setOnClickListener(this);
 
+        allChip = (Chip)fragmentView.findViewById(R.id.all_chip);
+        wipChip = (Chip)fragmentView.findViewById(R.id.wip_chip);
+        completedChip = (Chip)fragmentView.findViewById(R.id.complete_chip);
+        deadlineChip = (Chip)fragmentView.findViewById(R.id.deadline_chip);
+        priorityChip = (Chip)fragmentView.findViewById(R.id.priority_chip);
+        pauseChip = (Chip) fragmentView.findViewById(R.id.pause_chip);
+        allChip.setOnClickListener(this);
+        wipChip.setOnClickListener(this);
+        completedChip.setOnClickListener(this);
+        deadlineChip.setOnClickListener(this);
+        priorityChip.setOnClickListener(this);
+        pauseChip.setOnClickListener(this);
+
+        MembersFragment membersFragment = new MembersFragment();
+
+        ArrayAdapter<TasksModel> spinnerOwnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, localTasksList);
+        spinnerOwnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        createTaskOwner.setAdapter(spinnerOwnerAdapter);
         ArrayAdapter<CharSequence> spinnerPriorityAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.task_spinner_priority, android.R.layout.simple_spinner_item);
         spinnerPriorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         createTaskPriority.setAdapter(spinnerPriorityAdapter);
@@ -307,6 +310,19 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                                         firebaseRef.child(uniqueNodeName).child("Tasks").child("flag").setValue("Paused");
                                         refreshTask(firebaseRef);
                                         break;
+                                    case 3:
+                                        //TODO: make sure that all data uploaded to Firebase is then synced by syncTasks()
+                                        String taskName = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task name").getValue();
+                                        //String taskOwner = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task owner").getValue();
+                                        String taskDeadlineDate = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task status").getValue();
+                                        String taskDescription = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task description").getValue();
+                                        String taskDifficulty = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task difficulty").getValue();
+                                        String taskPriority = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task priority").getValue();
+                                        String taskPeopleWorking = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task people working").getValue();
+                                        long taskOwnerIndex = (long) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task owner index").getValue();
+
+                                        populateTaskForm(taskName, taskDeadlineDate, taskDescription, taskDifficulty, taskPriority, taskPeopleWorking, taskOwnerIndex);
+                                        break;
                                 }
             }
 
@@ -317,6 +333,47 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    void populateTaskForm(String taskName, String taskDeadlineDate, String taskDescription, String taskDifficulty, String taskPriority, String taskPeopleWorking, long taskOwnerIndex){
+        int priority;
+        int difficulty;
+        switch(taskDifficulty){
+            case "Low":
+                difficulty = 0;
+                break;
+            case "Medium":
+                difficulty = 1;
+                break;
+            case "High":
+                difficulty = 2;
+                break;
+            default:
+                difficulty = 0;
+                break;
+        }
+
+        switch(taskPriority){
+            case "Low":
+                priority = 0;
+                break;
+            case "Medium":
+                priority = 1;
+                break;
+            case "High":
+                priority = 2;
+                break;
+            default:
+                priority = 0;
+                break;
+        }
+
+        createTaskName.setText(taskName);
+        createTaskOwner.setSelection((int) taskOwnerIndex);
+        createTaskDeadline.setText(taskDeadlineDate);
+        createTaskDescription.setText(taskDescription);
+        createTaskDifficulty.setSelection(difficulty);
+        createTaskPriority.setSelection(priority);
+        createTaskPeopleWorking.setText(taskPeopleWorking);
+    }
 
     //syncing data from Firebase
     public final void syncTasks(final String filter) {
@@ -335,6 +392,8 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                 String taskDescription = (String) dataSnapshot.child("Tasks").child("task description").getValue();
                 String taskStatus = (String) dataSnapshot.child("Tasks").child("flag").getValue();
                 String taskPriority = (String) dataSnapshot.child("Tasks").child("task priority").getValue();
+                String taskPeopleWorking = (String)dataSnapshot.child("Tasks").child("people working").getValue();
+                String taskDifficulty = (String) dataSnapshot.child("Tasks").child("task difficulty").getValue();
 
                 Log.d(LOCAL_TAG, "syncing objects from Firebase");
                 //./fetching data from Firebase for task name, task owner, task status, task description and flag
@@ -344,19 +403,19 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                 //filtering logic
                 if(filter.equals("All")){
                     chipsState("All");
-                    localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                    localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate, taskPriority, taskPeopleWorking, taskDifficulty));
                 }
                 else if(filter.equals("Paused")){
                     if(taskStatus.equals(filter)){
                         chipsState("Paused");
-                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate, taskPriority, taskPeopleWorking, taskDifficulty));
                     }
                 }
                 else if(filter.equals("Priority")){
                     if(taskPriority.equals("High")){
                         //TODO: sort the tasks by priority (highest to lowest)
                         chipsState("Priority");
-                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate, taskPriority, taskPeopleWorking, taskDifficulty));
                     }
 
                 }
@@ -364,7 +423,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                     //TODO: the number should be chosen by the user
                     if(timeRemaining <= 10){
                         chipsState("Deadline");
-                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate, taskPriority, taskPeopleWorking, taskDifficulty));
                     }
 
                 }
@@ -372,7 +431,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
                     if(taskStatus.equals(filter)){
                         chipsState(filter);
-                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                        localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate, taskPriority, taskPeopleWorking, taskDifficulty));
                     }
                 }
 
@@ -416,7 +475,22 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
 
 
+void statisticsChart(String taskStatus, int timeRemaining, String taskPriority){
+    switch(taskStatus){
+        case "WIP":
+            break;
+        case "Completed":
+            break;
+        case "Paused":
+            break;
+    }
+    if(timeRemaining<10){
 
+    }
+    if(taskPriority.equals("High")){
+
+    }
+}
 
 
     public void showDatePickerDialog() {
@@ -426,30 +500,25 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
 
     //add conditions for EditTexts and datePicker according to which the save button will be activated/disabled
-    private void checkFieldsForEmptyValues() {
+    private void uploadTask( ) {
         String taskName = createTaskName.getText().toString();
-        String taskOwner = createTaskOwner.getText().toString();
+        String taskOwner = createTaskOwner.getSelectedItem().toString();
+        int ownerIndex = createTaskOwner.getSelectedItemPosition();
         String taskDeadline = createTaskDeadline.getText().toString();
         String taskDescription = createTaskDescription.getText().toString();
         String taskDifficulty = createTaskDifficulty.getSelectedItem().toString();
         String taskPriority = createTaskPriority.getSelectedItem().toString();
         String taskPeopleWorking = createTaskPeopleWorking.getText().toString();
 
-
         if (taskName.equals("") | taskOwner.equals("") | taskDeadline.equals("") | taskDescription.equals("") | taskDifficulty.equals("") | taskPriority.equals("") | taskPeopleWorking.equals("")) {
             //createTaskSubmit.setEnabled(false);
             //add icon to setError
             if (taskName.equals("") && taskOwner.equals("") && taskDeadline.equals("") && taskDescription.equals("") && taskDifficulty.equals("") && taskPriority.equals("") && taskPeopleWorking.equals("")) {
                 createTaskName.setError("You need to enter a name for the task");
-                createTaskOwner.setError("Owner is not selected");
                 createTaskDeadline.setError("deadline is not selected");
                 createTaskDescription.setError("you need to add description");
             } else if (taskName.equals("")) {
                 createTaskName.setError("You need to enter a name for the task");
-            }
-
-            if (taskOwner.equals("")) {
-                createTaskOwner.setError("Owner is not selected");
             }
             if (taskDescription.equals("")) {
                 createTaskDescription.setError("you need to add description");
@@ -462,7 +531,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             }
         } else {
             Toast.makeText(getActivity(), "Task uploaded", Toast.LENGTH_SHORT).show();
-            new TaskUploader().execute(taskName, taskOwner, taskDeadline, taskDescription, taskDifficulty, taskPriority, taskPeopleWorking);
+            new TaskUploader().execute(taskName, taskOwner, taskDeadline, taskDescription, taskDifficulty, taskPriority, taskPeopleWorking, Integer.toString(ownerIndex));
             uploadTaskCard.setVisibility(View.GONE);
             clearTaskFields();
         }
@@ -470,9 +539,41 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    void updateTask(){
+        final String taskName = createTaskName.getText().toString();
+        final String taskOwner = createTaskOwner.getSelectedItem().toString();
+        final int taskOwnerIndex = createTaskOwner.getSelectedItemPosition();
+        final String taskDeadline = createTaskDeadline.getText().toString();
+        final String taskDescription = createTaskDescription.getText().toString();
+        final String taskDifficulty = createTaskDifficulty.getSelectedItem().toString();
+        final String taskPriority = createTaskPriority.getSelectedItem().toString();
+        final String taskPeopleWorking = createTaskPeopleWorking.getText().toString();
+        final Firebase firebaseRef = new Firebase(TaskURL.tasksURL);
+        firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task name").setValue(taskName);
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task owner").setValue(taskOwner);
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task status").setValue(taskDeadline);
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task description").setValue(taskDescription);
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task difficulty").setValue(taskDifficulty);
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task priority").setValue(taskPriority);
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task people working").setValue(taskPeopleWorking);
+                firebaseRef.child(uniqueNodeName).child("Tasks").child("task owner index").setValue(taskOwnerIndex);
+                refreshTask(firebaseRef);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+        uploadTaskCard.setVisibility(View.GONE);
+    }
+
     public void clearTaskFields() {
         createTaskName.setText("");
-        createTaskOwner.setText("");
+        createTaskOwner.setSelection(0);
         createTaskDeadline.setText(currentDate());
         createTaskDescription.setText("");
         createTaskDifficulty.setSelection(0);
@@ -481,7 +582,6 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     }
     public void clearFieldsErrors(){
         createTaskName.setError(null);
-        createTaskOwner.setError(null);
         createTaskDeadline.setError(null);
         createTaskDescription.setError(null);
         createTaskPeopleWorking.setError(null);
@@ -496,12 +596,12 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                 break;
             case (R.id.create_task_submit):
                 if(createTaskSubmit.getText().equals("Submit")){
-                    checkFieldsForEmptyValues();
+                    uploadTask();
                     Toast.makeText(getActivity(), "Uploading...", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    //modifyTask(taskPosition);
                     Toast.makeText(getActivity(), "Modifying...", Toast.LENGTH_SHORT).show();
+                    updateTask();
                 }
                 break;
             case (R.id.all_chip):
@@ -560,6 +660,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
 
     public void refreshTask(Firebase ref) {
+        //TODO: Sync all field (like syncTasks())
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -568,10 +669,12 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                 String taskDeadlineDate = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task status").getValue();
                 String taskDescription = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task description").getValue();
                 String taskStatus = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("flag").getValue();
-
+                String taskDifficulty = (String)dataSnapshot.child(uniqueNodeName).child("Tasks").child("task difficulty").getValue();
+                String taskPriority = (String) dataSnapshot.child(uniqueNodeName).child("Tasks").child("task priority").getValue();
+                String taskPeopleWorking = (String)dataSnapshot.child(uniqueNodeName).child("Tasks").child("people working").getValue();
                 long daysRemaining = calculateTimeLeft(taskDeadlineDate);
                 //updates the itemList in TaskAdapter with the "Completed" status
-                localTasksList.set(taskItemPosition, new TasksModel(taskName, taskOwner, daysRemaining, taskDescription, taskStatus, taskDeadlineDate));
+                localTasksList.set(taskItemPosition, new TasksModel(taskName, taskOwner, daysRemaining, taskDescription, taskStatus, taskDeadlineDate, taskPriority, taskPeopleWorking, taskDifficulty));
                 taskAdapter.notifyItemChanged(taskItemPosition);
             }
 
@@ -582,6 +685,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
         });
 
     }
+
 
 
     public void returnToMainActivity() {
@@ -687,6 +791,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
                     createTaskSubmit.setText("Update");
+                    taskOptions(taskPosition, 3);
                     uploadTaskCard.setVisibility(View.VISIBLE);
                     popupWindow.dismiss();
                 }
@@ -705,6 +810,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             }
             //TODO: Check this line:
             popupWindow.setElevation(5);
+
             popupWindow.setFocusable(true);
             popupWindow.update();
 

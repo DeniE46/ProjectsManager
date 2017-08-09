@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/teal">
+
+        <RelativeLayout
+            android:id="@+id/task_content_card_header_content_view"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/task_card_header">
+
+            <TextView
+                android:id="@+id/task_content_task_card_number"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/task_position_bg"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="0" />
+
+            <TextView
+                android:id="@+id/task_content_task_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/task_content_task_card_number"
+                android:layout_toStartOf="@+id/task_content_collapse_content_view_cell"
+                android:paddingLeft="8dp"
+                android:text="Task Name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/white"
+                android:textSize="26sp" />
+
+            <Button
+                android:id="@+id/task_content_collapse_content_view_cell"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/task_card_icon_expand"
+                android:clickable="true" />
+
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/cell_content_view_header"
+            android:scaleType="centerCrop"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Task owners"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/horizontal_divider"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/task_content_task_owner_pic"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignParentStart="true"
+                android:layout_margin="15dp"
+                app:srcCompat="@drawable/member" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/task_content_owner_name"
+                android:layout_toEndOf="@+id/task_content_task_owner_pic"
+                android:text="4"
+                android:textColor="@color/colorAccent"/>
+
+            <TextView
+                android:id="@+id/task_content_owner_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/task_content_task_owner_pic"
+                android:layout_toEndOf="@+id/task_content_task_owner_pic"
+                android:text="John Doe"
+                android:textColor="@color/colorAccent"/>
+
+            <TextView
+                android:id="@+id/task_content_people_working"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/textView13"
+                android:layout_toEndOf="@+id/task_content_task_owner_pic" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Task status"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/horizontal_divider"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/task_content_previous_task_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/task_status_background_previous"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@android:color/white"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+
+            <TextView
+                android:id="@+id/task_content_current_task_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/task_status_background"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@android:color/white" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+
+            <TextView
+                android:id="@+id/task_content_next_task_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/task_status_background_next"
+                android:gravity="center_horizontal"
+                android:text="TextView"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Task details"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/horizontal_divider"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:weightSum="10">
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.42" />
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0.1"
+                    android:background="@drawable/badge"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="12"
+                    android:textColor="@color/colorAccent" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.42" />
+
+                <TextView
+                    android:id="@+id/textView21"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0.1"
+                    android:background="@drawable/badge"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="7"
+                    android:textColor="@color/colorAccent" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.42" />
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="0.1"
+                    android:background="@drawable/badge"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="30"
+                    android:textColor="@color/colorAccent" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.42" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clipChildren="false"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/label_difficulty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_horizontal"
+                        android:paddingRight="10dp"
+                        android:text="Difficulty"
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/task_content_task_difficulty"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/label_difficulty"
+                        android:background="@drawable/badge_subtitle"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="15"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/task_content_task_priority"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/badge_subtitle"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="15"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/label_priority"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/task_content_task_priority"
+                        android:gravity="center_horizontal"
+                        android:paddingLeft="10dp"
+                        android:text="Priority"
+                        android:textColor="@color/colorAccent" />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Task description"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/horizontal_divider"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/task_content_task_description"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:text="asdddddd/naaaaaaaaa/naaaaaaaaaaa/naaaaaaaaadd/ndddddddddddddd/nasdassssss/nsssssssssss/nsssssss/nssssssdasd/nasdasdasd"
+            android:textColor="@color/colorAccent"
+            android:padding="15dp"/>
+
+    </LinearLayout>
+</merge>
