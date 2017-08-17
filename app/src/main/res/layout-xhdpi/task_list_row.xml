@@ -408,60 +408,88 @@
 
 
             <TextView
+                android:id="@+id/difficulty_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/task_difficulty"
+                android:layout_alignBottom="@+id/task_difficulty"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/view4"
+                android:paddingStart="6dp"
+                android:paddingTop="6dp"
+                android:text="Difficulty"
+                />
+
+            <View
+                android:id="@+id/difficulty_divider"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/difficulty_label"
+                android:layout_alignTop="@+id/difficulty_label"
+                android:layout_below="@+id/view4"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_toEndOf="@id/difficulty_label"
+                android:background="@color/tasks_status_color_silver"
+                android:paddingTop="10dp" />
+
+            <TextView
                 android:id="@+id/task_difficulty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignTop="@+id/difficulty_gauge"
-                android:layout_alignBottom="@id/difficulty_gauge"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/task_difficulty_background"
-                android:text="TextView"
-                android:textColor="@color/teal"
-                android:gravity="center"/>
-
-            <ImageView
-                android:id="@+id/difficulty_gauge"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentLeft="true"
                 android:layout_below="@+id/view4"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
-                app:srcCompat="@drawable/task_difficulty_indicator" />
-
+                android:layout_toEndOf="@+id/difficulty_divider"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:text="Difficulty"
+                android:textColor="@color/task_card_header"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/task_owner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/difficulty_gauge"
                 android:layout_below="@+id/task_card_header_title_view"
+                android:paddingBottom="10dp"
+                android:paddingStart="6dp"
                 android:paddingTop="10dp"
                 android:text="Owner Name"
-                android:textSize="16sp" />
+                android:textColor="@color/task_card_header"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/task_deadline_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/task_owner"
-                android:layout_below="@+id/task_owner"
-                android:paddingTop="5dp"
-                android:text="Deadline" />
+                android:layout_below="@id/task_owner"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/deadline_divider"
+                android:text="Deadline"
+                android:textColor="@color/task_card_header"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/deadline_divider"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/deadline_label"
+                android:layout_alignTop="@+id/deadline_label"
+                android:layout_below="@id/task_owner"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_toEndOf="@id/deadline_label"
+                android:background="@color/tasks_status_color_silver" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/deadline_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/task_deadline_date"
-                android:maxLines="1"
-                android:rotation="-90"
-                android:text="Time Left"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_alignBottom="@id/task_deadline_date"
+                android:layout_alignTop="@id/task_deadline_date"
+                android:layout_below="@id/task_owner"
+                android:paddingStart="6dp"
+                android:text="Deadline" />
 
             <View
                 android:id="@+id/view4"
@@ -469,18 +497,23 @@
                 android:layout_height="1dp"
                 android:layout_below="@id/task_deadline_date"
                 android:layout_marginTop="5dp"
-                android:layout_toStartOf="@+id/task_deadline_color"
-                android:background="@android:color/darker_gray" />
+                android:background="@android:color/darker_gray"
+                android:layout_toStartOf="@+id/task_deadline_holder" />
 
-
-            <ImageView
-                android:id="@+id/task_deadline_color"
+            <RelativeLayout
+                android:id="@+id/task_deadline_holder"
                 android:layout_width="60dp"
-                android:layout_height="150dp"
-                android:layout_alignBottom="@id/task_deadline_color"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/task_card_header_title_view" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/task_card_header_title_view">
 
+                <ImageView
+                    android:id="@+id/task_deadline_color"
+                    android:layout_width="60dp"
+                    android:layout_height="150dp"
+                    android:layout_alignBottom="@id/task_deadline_color"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
 
 
         </RelativeLayout>

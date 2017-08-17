@@ -158,45 +158,45 @@ class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
 
         //checks for task status and sets the color respectfully
         if(tm.getTaskStatus().equals("Completed")){
-            holder.taskStatusColor.setBackgroundColor(Color.argb(190, 223, 230, 225));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(100, 181, 246));
         }
         else if(tm.getTaskStatus().equals("Paused")){
-            holder.taskStatusColor.setBackgroundColor(Color.argb(190, 85, 85, 85));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(186, 104, 200));
         }
         //checks how many days are left to deadline for a task and colors the cardView respectfully
         else if (tm.getTimeRemaining() >= 10) {
             //green
-            contentTaskPreviousStatusBackground.setColor(Color.argb(190, 77, 218, 203));
-            contentTaskCurrentStatusBackground.setColor(Color.argb(190, 119, 253, 61));
-            contentTaskNextStatusBackground.setColor(Color.argb(190, 253, 247, 61));
-            holder.taskStatusColor.setBackgroundColor(Color.argb(190, 119, 253, 61));
+            contentTaskPreviousStatusBackground.setColor(Color.rgb(77, 218, 203));
+            contentTaskCurrentStatusBackground.setColor(Color.rgb(129, 199, 132));
+            contentTaskNextStatusBackground.setColor(Color.rgb(255, 241, 118));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(129, 199, 132));
         }
         else if ((tm.getTimeRemaining() < 10) && (tm.getTimeRemaining() >= 5)) {
             //yellow
-            contentTaskPreviousStatusBackground.setColor(Color.argb(190, 119, 253, 61));
-            contentTaskCurrentStatusBackground.setColor(Color.argb(190, 253, 247, 61));
-            contentTaskNextStatusBackground.setColor(Color.argb(190, 253, 144, 61));
-            holder.taskStatusColor.setBackgroundColor(Color.argb(190, 253, 247, 61));
+            contentTaskPreviousStatusBackground.setColor(Color.rgb(129, 199, 132));
+            contentTaskCurrentStatusBackground.setColor(Color.rgb(255, 241, 118));
+            contentTaskNextStatusBackground.setColor(Color.rgb(255, 171, 64));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(255, 241, 118));
         }
         else if ((tm.getTimeRemaining() < 5) && (tm.getTimeRemaining() >= 3)) {
             //orange
-            contentTaskPreviousStatusBackground.setColor(Color.argb(190, 253, 247, 61));
-            contentTaskCurrentStatusBackground.setColor(Color.argb(190, 253, 144, 61));
-            contentTaskNextStatusBackground.setColor(Color.argb(190, 253, 61, 61));
-            holder.taskStatusColor.setBackgroundColor(Color.argb(190, 253, 144, 61));
+            contentTaskPreviousStatusBackground.setColor(Color.rgb(255, 241, 118));
+            contentTaskCurrentStatusBackground.setColor(Color.rgb(255, 171, 64));
+            contentTaskNextStatusBackground.setColor(Color.rgb(229, 115, 115));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(255, 171, 64));
         }
         else if (tm.getTimeRemaining() < 3 && tm.getTimeRemaining() >=0) {
             //red
-            contentTaskPreviousStatusBackground.setColor(Color.argb(190, 253, 144, 61));
-            contentTaskCurrentStatusBackground.setColor(Color.argb(190, 253, 61, 61));
-            contentTaskNextStatusBackground.setColor(Color.argb(190, 77, 218, 203));
-            holder.taskStatusColor.setBackgroundColor(Color.argb(190, 253, 61, 61));
+            contentTaskPreviousStatusBackground.setColor(Color.rgb(255, 171, 64));
+            contentTaskCurrentStatusBackground.setColor(Color.rgb(229, 115, 115));
+            contentTaskNextStatusBackground.setColor(Color.rgb(229, 115, 115));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(229, 115, 115));
         }
         else if(tm.getTimeRemaining() < 0){
-            contentTaskPreviousStatusBackground.setColor(Color.argb(190, 253, 144, 61));
-            contentTaskCurrentStatusBackground.setColor(Color.argb(190, 253, 61, 61));
-            contentTaskNextStatusBackground.setColor(Color.argb(190, 77, 218, 203));
-            holder.taskStatusColor.setBackgroundColor(Color.argb(190, 253, 61, 61));
+            contentTaskPreviousStatusBackground.setColor(Color.rgb(229, 115, 115));
+            contentTaskCurrentStatusBackground.setColor(Color.rgb(229, 115, 115));
+            contentTaskNextStatusBackground.setColor(Color.rgb(77, 218, 203));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(229, 115, 115));
         }
         //./checks how many days are left to deadline for a task and colors the cardView respectfully
 

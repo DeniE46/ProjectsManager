@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -55,14 +57,14 @@ public class MembersFragment extends Fragment {
         //checks if view is null so that if it is not the view will not be inflated again and the firebase data will not be duplicated
         if(view == null){
             view = inflater.inflate(R.layout.content_main2, container, false);
-
             //registering widgets, adapters, data structures and layouts
             RecyclerView recyclerView;
             recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             teamMembersAdapter = new TeamMembersAdapter(membersList);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            //recyclerView.setItemAnimator(new DefaultItemAnimator());
+
             recyclerView.setAdapter(teamMembersAdapter);
             parentLayout = view.findViewById(R.id.root_view);
 
