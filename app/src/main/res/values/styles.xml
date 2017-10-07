@@ -33,7 +33,14 @@
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">#FFFFFF</item>
+        <item name="colorAccent">@android:color/white</item>
+        <!--removes elevation from toolbar-->
+        <!--<item name="elevation">0dp</item>-->
+    </style>
+
+    <style name="ThemeAlertCreateDescription" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:backgroundTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
 

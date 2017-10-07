@@ -3,15 +3,21 @@ package com.adk.projectsmanager;
 
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,9 +25,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -37,6 +47,7 @@ import com.robertlevonyan.views.chip.Chip;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -71,13 +82,9 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     final float CHIP_ALPHA_PRESSED = 0.7f;
     final float CHIP_ALPHA = 1f;
     long timeRemaining;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    ArrayList<String> ownersList = new ArrayList<>();
 
 
-    }
 
     @Nullable
     @Override
@@ -116,12 +123,13 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
             createTaskSubmit = (Button) fragmentView.findViewById(R.id.create_task_submit);
 
-
             uploadTaskCard.setVisibility(View.GONE);
             createTaskDeadline.setOnClickListener(this);
 
             createTaskDeadline.setText(currentDate());
             createTaskSubmit.setOnClickListener(this);
+
+
 
 
 
@@ -138,36 +146,82 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             }
 
             mRef = new Firebase(FirebaseConfig.FIREBASE_URL);
+
         }
 
         createTask = (FloatingActionButton)fragmentView.findViewById(R.id.create_task_fab);
+
         allChip = (Chip)fragmentView.findViewById(R.id.all_chip);
         wipChip = (Chip)fragmentView.findViewById(R.id.wip_chip);
         completedChip = (Chip)fragmentView.findViewById(R.id.complete_chip);
         deadlineChip = (Chip)fragmentView.findViewById(R.id.deadline_chip);
         priorityChip = (Chip)fragmentView.findViewById(R.id.priority_chip);
         pauseChip = (Chip) fragmentView.findViewById(R.id.pause_chip);
+
         allChip.setOnClickListener(this);
         wipChip.setOnClickListener(this);
         completedChip.setOnClickListener(this);
         deadlineChip.setOnClickListener(this);
         priorityChip.setOnClickListener(this);
         pauseChip.setOnClickListener(this);
+
         createTask.bringToFront();
         createTask.setOnClickListener(this);
 
-        //MembersFragment membersFragment = new MembersFragment();
+        syncMembers();
 
-        ArrayAdapter<TasksModel> spinnerOwnerAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item_custom_layout, localTasksList);
-        spinnerOwnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        createTaskOwner.setAdapter(spinnerOwnerAdapter);
+
         ArrayAdapter<CharSequence> spinnerPriorityAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.task_spinner_priority, R.layout.spinner_item_custom_layout);
         spinnerPriorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         createTaskPriority.setAdapter(spinnerPriorityAdapter);
+
+
         ArrayAdapter<CharSequence> spinnerDifficultyAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.task_spinner_difficulty, R.layout.spinner_item_custom_layout);
         spinnerDifficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         createTaskDifficulty.setAdapter(spinnerDifficultyAdapter);
+
         return fragmentView;
+    }
+
+
+
+    public void syncMembers(){
+        Firebase membersRef = new Firebase(TaskURL.membersURL);
+        membersRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String ownersName = (String) dataSnapshot.child("Person").child("name").getValue();
+                if(ownersName == null){
+                    ownersName = "error";
+                }
+
+                ownersList.add(ownersName);
+
+                ArrayAdapter<String> spinnerOwnerAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item_custom_layout, ownersList);
+                spinnerOwnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                createTaskOwner.setAdapter(spinnerOwnerAdapter);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -263,7 +317,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                                         //ref.child(uniqueNodeName).child("Tasks").child("flag").removeValue();
 
 
-                                        Log.d("TasksFragment","removing "+position);
+                                        Log.d("TasksFragment","removing " + position);
                                         localTasksList.remove(position);
                                         taskAdapter.notifyItemRemoved(position);
 
@@ -354,7 +408,12 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
         }
 
         createTaskName.setText(taskName);
-        createTaskOwner.setSelection(Integer.parseInt(taskOwnerIndex));
+        try{
+            createTaskOwner.setSelection(Integer.parseInt(taskOwnerIndex));
+        }
+        catch (NumberFormatException e){
+            createTaskOwner.setSelection(0);
+        }
         createTaskDeadline.setText(taskDeadlineDate);
         createTaskDescription.setText(taskDescription);
         createTaskDifficulty.setSelection(difficulty);
@@ -365,15 +424,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     //syncing data from Firebase
     public final void syncTasks(final String filter) {
 
-        /*CafeBar.builder(getActivity())
-                .content("Filter for Tasks list set:")
-                .neutralText(filter)
-                .neutralColor(R.color.teal)
-                .floating(true)
-                //TODO: this has to be fixed
-                .icon(R.drawable.filter_tasks, false)
-                .show();
-*/
+
         if(!localTasksList.isEmpty()){
             localTasksList.clear();
         }
@@ -389,7 +440,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                 String taskDescription = (String) dataSnapshot.child("Tasks").child("task description").getValue();
                 String taskStatus = (String) dataSnapshot.child("Tasks").child("flag").getValue();
                 String taskPriority = (String) dataSnapshot.child("Tasks").child("task priority").getValue();
-                String taskPeopleWorking = (String)dataSnapshot.child("Tasks").child("people working").getValue();
+                String taskPeopleWorking = (String)dataSnapshot.child("Tasks").child("task people working").getValue();
                 String taskDifficulty = (String) dataSnapshot.child("Tasks").child("task difficulty").getValue();
 
                 Log.d(LOCAL_TAG, "syncing objects from Firebase");
@@ -429,15 +480,25 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
                     if(taskStatus.equals(filter)){
                         chipsState(filter);
                         localTasksList.add(new TasksModel(taskName, taskOwner, timeRemaining, taskDescription, taskStatus, taskDeadlineDate, taskPriority, taskPeopleWorking, taskDifficulty));
+
+
                     }
                 }
 
-
-
+                /*
+                CafeBar.builder(getActivity())
+                        .content("Filter for Tasks list set:")
+                        .neutralText(filter)
+                        .neutralColor(R.color.teal)
+                        .floating(true)
+                        //TODO: this has to be fixed
+                        .icon(R.drawable.filter_tasks, false)
+                        .show();
+                */
                 Log.i(LOCAL_TAG,"adding objects to localTasksList " + localTasksList.size());
 
                 taskAdapter.notifyDataSetChanged();
-                recyclerView.getLayoutManager().scrollToPosition(localTasksList.size()-1);
+                recyclerView.getLayoutManager().scrollToPosition(0);
 
 
 
@@ -466,6 +527,8 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
         };
         ref.addChildEventListener(mChildEventListener);
 
+
+
     }
 
 
@@ -480,8 +543,8 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     private void uploadTask( ) {
         String taskName = createTaskName.getText().toString();
         //TODO: fix this as well
-        //String taskOwner = createTaskOwner.getSelectedItem().toString();
-        String taskOwner = "test";
+        String taskOwner = createTaskOwner.getSelectedItem().toString();
+        //String taskOwner = "test";
         int ownerIndex = createTaskOwner.getSelectedItemPosition();
         String taskDeadline = createTaskDeadline.getText().toString();
         String taskDescription = createTaskDescription.getText().toString();
@@ -510,12 +573,14 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             }
         } else {
             Toast.makeText(getActivity(), "Task uploaded", Toast.LENGTH_SHORT).show();
-            new TaskUploader().execute(taskName, taskOwner, taskDeadline, taskDescription, taskDifficulty, taskPriority, taskPeopleWorking, Integer.toString(ownerIndex));
+            taskAdapter.notifyDataSetChanged();
+            recyclerView.getLayoutManager().scrollToPosition(localTasksList.size()-1);
             clearTaskFields();
             uploadTaskCard.setVisibility(View.GONE);
             filterTaskCard.setVisibility(View.VISIBLE);
-        }
+            new TaskUploader().execute(taskName, taskOwner, taskDeadline, taskDescription, taskDifficulty, taskPriority, taskPeopleWorking, Integer.toString(ownerIndex));
 
+        }
 
     }
 
@@ -548,6 +613,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+        recyclerView.getLayoutManager().scrollToPosition(localTasksList.size()-1);
         uploadTaskCard.setVisibility(View.GONE);
         filterTaskCard.setVisibility(View.VISIBLE);
     }
@@ -571,6 +637,8 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        Animation animationExit = AnimationUtils.loadAnimation(getActivity(), R.anim.exit_to_top);
+        Animation animationEnter = AnimationUtils.loadAnimation(getActivity(), R.anim.enter_from_top);
         switch (v.getId()) {
             case (R.id.create_task_deadline):
                 showDatePickerDialog();
@@ -578,12 +646,27 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             case (R.id.create_task_submit):
                 if(createTaskSubmit.getText().equals("Submit")){
                     uploadTask();
-                    Toast.makeText(getActivity(), "Uploading...", Toast.LENGTH_SHORT).show();
+                    CafeBar.builder(getActivity())
+                            //.content("Filter for Tasks list set:")
+                            .neutralText("Uploading...")
+                            .neutralColor(R.color.teal)
+                            .floating(true)
+                            //TODO: this has to be fixed
+                            //.icon(R.drawable.filter_tasks, false)
+                            .show();
                 }
                 else{
                     updateTask();
-                    Toast.makeText(getActivity(), "Modifying...", Toast.LENGTH_SHORT).show();
+                    CafeBar.builder(getActivity())
+                            //.content("Filter for Tasks list set:")
+                            .neutralText("Modifying...")
+                            .neutralColor(R.color.teal)
+                            .floating(true)
+                            //TODO: this has to be fixed
+                            //.icon(R.drawable.filter_tasks, false)
+                            .show();
                 }
+
                 break;
             case (R.id.all_chip):
                 syncTasks("All");
@@ -606,13 +689,17 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             case R.id.create_task_fab:
                 //TODO:add animation
                 if (uploadTaskCard.getVisibility() == View.VISIBLE) {
+                    uploadTaskCard.setAnimation(animationExit);
                     uploadTaskCard.setVisibility(View.GONE);
+                    filterTaskCard.setAnimation(animationEnter);
                     filterTaskCard.setVisibility(View.VISIBLE);
                     clearFieldsErrors();
                     clearTaskFields();
                 } else {
                     createTaskSubmit.setText("Submit");
+                    uploadTaskCard.setAnimation(animationEnter);
                     uploadTaskCard.setVisibility(View.VISIBLE);
+                    filterTaskCard.setAnimation(animationExit);
                     filterTaskCard.setVisibility(View.GONE);
                 }
                 break;
@@ -710,15 +797,31 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     //inner class
      class PopUpWindow  {
 
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+
+
         private final int POPUP_Y_OFFSET = 70;
         private final int POPUP_Y_NEGATIVE_OFFSET = 190; //when the pop up has no space to appear in the card it appears atop
+        private int popupYThreshold = 1500;
 
 
          void showPopup(final int taskPosition, int popupLocation[]) {
+            if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                popupYThreshold = 790;
+            }
 
-            Drawable myIcon = getActivity().getDrawable(R.drawable.popup_bg_negative);
             View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_layout, null);
-            final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+            ImageView arrowUp = (ImageView)popupView.findViewById(R.id.task_popup_arrow_up);
+            ImageView arrowDown = (ImageView)popupView.findViewById(R.id.task_popup_arrow_down);
+             /*
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point point = new Point();
+            display.getSize(point);
+            int width = point.x;
+            width = width-30; //subtract 30% of the pixels to get smaller size of the popup than the display leaving room for margin
+            int height = point.y;
+             */
+            final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             Button btnDismiss = (Button) popupView.findViewById(R.id.close);
             Button deleteTaskButton = (Button) popupView.findViewById(R.id.delete_task_button);
             Button completeTaskButton = (Button) popupView.findViewById(R.id.complete_task_button);
@@ -779,21 +882,29 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
             });
 
             popupWindow.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
-            popupWindow.setHeight(200);
+            popupWindow.setHeight(300);
 
             //x-width,y-height
-            if(popupLocation[1]>1500){
-                popupView.setBackground(myIcon);
+            if(popupLocation[1]>popupYThreshold){
+                arrowUp.setVisibility(View.GONE);
+                popupWindow.setElevation(15);
+                popupWindow.setFocusable(true);
+                popupWindow.update();
+                //popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, popupLocation[1]-POPUP_Y_OFFSET);
                 popupWindow.showAsDropDown(popupView, 0, popupLocation[1]-POPUP_Y_NEGATIVE_OFFSET);
             }
             else{
+                arrowDown.setVisibility(View.GONE);
+                popupWindow.setElevation(15);
+                popupWindow.setFocusable(true);
+                popupWindow.update();
+                //popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, popupLocation[1]-POPUP_Y_NEGATIVE_OFFSET);
                 popupWindow.showAsDropDown(popupView, 0, popupLocation[1]+POPUP_Y_OFFSET);
             }
-            //TODO: Check this line:
-            popupWindow.setElevation(5);
 
-            popupWindow.setFocusable(true);
-            popupWindow.update();
+
+
+
 
         }
 

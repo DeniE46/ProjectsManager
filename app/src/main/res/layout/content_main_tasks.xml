@@ -62,11 +62,12 @@
 
 
                     <EditText
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/create_task_name"
-                            android:layout_weight="1"
-                        android:backgroundTint="@android:color/white"/>
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/create_task_name"
+                        android:layout_weight="1"
+                        android:backgroundTint="@android:color/white"
+                        android:textColor="@android:color/white"/>
 
                     <Spinner
                         android:layout_width="0dp"
@@ -114,7 +115,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:backgroundTint="@android:color/white"/>
+                        android:backgroundTint="@android:color/white" />
 
                     <Spinner
                         android:id="@+id/create_task_priority"
@@ -174,7 +175,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:inputType="number"
-                        android:backgroundTint="@android:color/white"/>
+                        android:backgroundTint="@android:color/white"
+                        android:textColor="@android:color/white"/>
 
 
                 </LinearLayout>
@@ -202,7 +204,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
                     android:layout_below="@+id/task_edit_form_label_fourth_row"
-                    android:backgroundTint="@android:color/white"/>
+                    android:backgroundTint="@android:color/white"
+                    android:textColor="@android:color/white"/>
 
                 <Button
                     android:id="@+id/create_task_submit"
@@ -224,7 +227,7 @@
 
 
     <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/task_filter_card"
         android:layout_below="@id/upload_task_card">
@@ -247,6 +250,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="11dp"
                 app:backgroundColor="@color/teal"
+                android:background="?android:attr/selectableItemBackground"
                 app:chipIcon="@drawable/filter_tasks"
                 app:hasIcon="true"
                 app:textColor="@android:color/white"
@@ -261,6 +265,7 @@
                 app:chipIcon="@drawable/filter_tasks"
                 app:hasIcon="true"
                 app:textColor="@android:color/white"
+                android:background="?android:attr/selectableItemBackground"
                 app:chipText="WIP"/>
             <com.robertlevonyan.views.chip.Chip
                 android:layout_width="wrap_content"
@@ -272,7 +277,8 @@
                 app:chipIcon="@drawable/filter_tasks"
                 app:chipText="Completed"
                 app:hasIcon="true"
-                app:textColor="@android:color/white" />
+                app:textColor="@android:color/white"
+                android:background="?android:attr/selectableItemBackground"/>
             <com.robertlevonyan.views.chip.Chip
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -280,6 +286,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="11dp"
                 app:backgroundColor="@color/teal"
+                android:background="?android:attr/selectableItemBackground"
                 app:chipIcon="@drawable/filter_tasks"
                 app:chipText="On hold"
                 app:hasIcon="true"
@@ -292,6 +299,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="11dp"
                 app:backgroundColor="@color/teal"
+                android:background="?android:attr/selectableItemBackground"
                 app:chipIcon="@drawable/filter_tasks"
                 app:chipText="Deadline"
                 app:hasIcon="true"
@@ -303,6 +311,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="11dp"
                 app:backgroundColor="@color/teal"
+                android:background="?android:attr/selectableItemBackground"
                 app:chipIcon="@drawable/filter_tasks"
                 app:chipText="Priority"
                 app:hasIcon="true"
@@ -331,6 +340,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        app:rippleColor="@color/teal"
         android:clickable="true"
         android:src="@drawable/add_new_tasks"
         app:backgroundTint="@color/colorAccent"

@@ -51,7 +51,7 @@ public class DescriptionFragment extends Fragment {
         View view = inflater.inflate(R.layout.description_fragment_layout, container, false);
         projectName = (TextView)view.findViewById(R.id.view_project_name);
         projectDescription = (TextView)view.findViewById(R.id.view_project_description);
-        statisticsChartFragment = new StatisticsChartFragment();
+
         setHasOptionsMenu(true);
         viewPager = (ViewPager)getActivity().findViewById(R.id.viewpager);
 
@@ -65,11 +65,17 @@ public class DescriptionFragment extends Fragment {
         }
 
         descUrl = FirebaseConfig.FIREBASE_URL  + "/users/" + mUserId + "/Description";
+
         syncDescription();
-        displayStatisticsChartFragment();
+
         return view;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        displayStatisticsChartFragment();
+    }
 
     private void syncDescription(){
         projectDescription.setMovementMethod(new ScrollingMovementMethod());
@@ -116,7 +122,7 @@ public class DescriptionFragment extends Fragment {
 
     public final void dialogCreateDescription(){
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.create_description, null);
-        AlertDialog.Builder alertdialog = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertdialog = new AlertDialog.Builder(getActivity(), R.style.ThemeAlertCreateDescription);
         alertdialog.setView(v);
         final EditText editProjectName = (EditText)v.findViewById(R.id.edit_project_name);
         final EditText editProjectDescription = (EditText)v.findViewById(R.id.edit_project_description);
@@ -190,10 +196,12 @@ public class DescriptionFragment extends Fragment {
     }
 
     void displayStatisticsChartFragment(){
+        statisticsChartFragment = new StatisticsChartFragment();
         android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.chart_scene, statisticsChartFragment);
         fragmentTransaction.commit();
+        statisticsChartFragment.syncMembers();
     }
 
 }

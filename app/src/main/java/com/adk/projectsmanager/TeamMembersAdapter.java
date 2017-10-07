@@ -21,7 +21,7 @@ import java.util.List;
 
      class MyViewHolder extends RecyclerView.ViewHolder{
 
-          TextView name, occupation;
+          TextView name, occupation, phoneNumber, facebookAccount;
           ImageView PicId;
 
 
@@ -31,7 +31,8 @@ import java.util.List;
              name = (TextView)view.findViewById(R.id.person_name);
              occupation = (TextView)view.findViewById(R.id.person_occupation);
              PicId = (ImageView)view.findViewById(R.id.person_photo);
-
+             phoneNumber = (TextView)view.findViewById(R.id.person_phone);
+             facebookAccount = (TextView)view.findViewById(R.id.person_fb);
          }
 
 
@@ -64,7 +65,8 @@ import java.util.List;
         holder.name.setText(membersModel.getName());
         holder.occupation.setText(membersModel.getOccupation());
         holder.PicId.setImageResource(membersModel.getPicId());
-
+        holder.phoneNumber.setText(membersModel.getPhone());
+        holder.facebookAccount.setText(membersModel.getFacebookAccount());
     }
 
 

@@ -35,6 +35,30 @@ public class TasksModel implements Parcelable {
 
     }
 
+    protected TasksModel(Parcel in) {
+        taskName = in.readString();
+        taskOwner = in.readString();
+        taskDescription = in.readString();
+        taskDeadlineDate = in.readString();
+        taskDifficulty = in.readString();
+        taskPriority = in.readString();
+        taskPeopleWorking = in.readString();
+        taskStatus = in.readString();
+        timeRemaining = in.readLong();
+    }
+
+    public static final Creator<TasksModel> CREATOR = new Creator<TasksModel>() {
+        @Override
+        public TasksModel createFromParcel(Parcel in) {
+            return new TasksModel(in);
+        }
+
+        @Override
+        public TasksModel[] newArray(int size) {
+            return new TasksModel[size];
+        }
+    };
+
     public String getTaskName() {
         return taskName;
     }
@@ -71,7 +95,6 @@ public class TasksModel implements Parcelable {
         return taskPeopleWorking;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -79,7 +102,15 @@ public class TasksModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(taskName);
+        dest.writeString(taskOwner);
+        dest.writeString(taskDescription);
+        dest.writeString(taskDeadlineDate);
+        dest.writeString(taskDifficulty);
+        dest.writeString(taskPriority);
+        dest.writeString(taskPeopleWorking);
+        dest.writeString(taskStatus);
+        dest.writeLong(timeRemaining);
     }
 
     //adding toString() to provide what to display for spinners binding lists that implement this model

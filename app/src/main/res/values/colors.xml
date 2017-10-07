@@ -14,4 +14,5 @@
     <color name="teal">#008080</color>
     <color name="task_chip_filter">#83E6DA</color>
     <color name="task_card_header">#83E6DA</color>
+    <color name="task_content_divider">#373737</color>
 </resources>

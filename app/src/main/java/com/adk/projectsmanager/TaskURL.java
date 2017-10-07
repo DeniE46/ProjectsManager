@@ -3,6 +3,7 @@ package com.adk.projectsmanager;
 
  class TaskURL {
         static String tasksURL = null;
+        static String membersURL = null;
 
      TaskURL() {
 
@@ -14,4 +15,7 @@ package com.adk.projectsmanager;
 
     }
 
-}
+     void setMembersURL(String membersURL) {
+         this.membersURL = membersURL;
+     }
+ }

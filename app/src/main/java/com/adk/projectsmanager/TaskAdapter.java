@@ -103,7 +103,7 @@ class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
                      popUpWindow.showPopup(taskCardPosition, popupLocation);
                      break;
                  case R.id.task_content_collapse_content_view_cell:
-                     foldingCell.toggle(true);
+                     foldingCell.toggle(false);
                      foldingCell.fold(false);
 
 
@@ -196,7 +196,7 @@ class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             contentTaskPreviousStatusBackground.setColor(Color.rgb(229, 115, 115));
             contentTaskCurrentStatusBackground.setColor(Color.rgb(229, 115, 115));
             contentTaskNextStatusBackground.setColor(Color.rgb(77, 218, 203));
-            holder.taskStatusColor.setBackgroundColor(Color.rgb(229, 115, 115));
+            holder.taskStatusColor.setBackgroundColor(Color.rgb(77, 218, 203));
         }
         //./checks how many days are left to deadline for a task and colors the cardView respectfully
 
@@ -204,7 +204,7 @@ class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
         holder.taskContentNumber.setText(cardPosition);
         holder.taskContentName.setText(tm.getTaskName());
         holder.taskContentOwner.setText(tm.getTaskOwner());
-        holder.taskContentPeopleWorking.setText(tm.getTaskPeopleWorking());
+        holder.taskContentPeopleWorking.setText(tm.getTaskPeopleWorking() + " working on the task");
         holder.taskContentPreviousStatus.setText("Previous status");
         holder.taskContentCurrentStatus.setText(tm.getTaskStatus());
         holder.taskContentNextStatus.setText("Next status");

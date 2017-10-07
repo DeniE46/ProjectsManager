@@ -49,11 +49,9 @@ public class DataTabs extends AppCompatActivity implements StatisticsChartFragme
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams)toolbar.getLayoutParams();
         firebaseConfig = new FirebaseConfig();
 
-
         params.setScrollFlags(0);
         appBarLayout.setElevation(0);
         viewPager.setElevation(0);
-
 
 
         setSupportActionBar(toolbar);
@@ -95,9 +93,8 @@ public class DataTabs extends AppCompatActivity implements StatisticsChartFragme
         viewPagerAdapter.addFragment(new MembersFragment(), "Members");
         viewPagerAdapter.addFragment(new TasksFragment(), "Tasks");
         viewPagerAdapter.addFragment(new CalendarFragment(), "Calendar");
-        viewPagerAdapter.addFragment(new NotesFragment(), "Notes");
+        //viewPagerAdapter.addFragment(new NotesFragment(), "Notes");
         viewPager.setAdapter(viewPagerAdapter);
-
     }
 
     @Override

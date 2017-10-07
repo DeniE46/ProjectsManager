@@ -14,6 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -45,6 +50,11 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
     static int deadlineDays;
     static String accentLight, accentDark;
     FilterListener filterListener;
+    public Firebase mRef;
+    private String mUserId;
+    private String membersUrl;
+    private ArrayList<Long> nodesList;
+
 
     public interface FilterListener{
          void setFilter(String filterWIP);
@@ -69,9 +79,61 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
         barChart = (BarChart)view.findViewById(R.id.barchart);
         //tasksModel = new TasksModel();
         viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+
+
+
+        //syncMembers();
         //taskAdapter = new TaskAdapter(tasksModelList, getActivity());
         //reference to LoadData class to load the necessary data
         //loadData = new LoadData();
+
+
+        tasksFragment = new TasksFragment();
+
+        return view;
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+    }
+
+    public void syncMembers(){
+        mRef = new Firebase(FirebaseConfig.FIREBASE_URL);
+        //login/reg
+        try {
+            mUserId = mRef.getAuth().getUid();
+        } catch (Exception e) {
+            Log.d("StatisticsChart", "error");
+        }
+
+        membersUrl = FirebaseConfig.FIREBASE_URL  + "/users/" + mUserId;
+        nodesList = new ArrayList<>();
+        //syncing with firebase
+        Firebase ref = new Firebase(membersUrl);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dataSnapshot.getChildrenCount();
+                for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                    nodesList.add(snap.getChildrenCount());
+                }
+                initiateStatistics();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
+    }
+
+
+    private void initiateStatistics(){
         //hides titles and background
         //barChart.getXAxis().setEnabled(false);
         //barChart.getAxisLeft().setEnabled(false);
@@ -79,22 +141,21 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
         barChart.setDescription("");
         barChart.getLegend().setEnabled(true);
         // barChart.setBackgroundColor(Color.parseColor("#34FF89"));
-
         barGroup1 = new ArrayList<>();
-        barGroup1.add(new BarEntry(8, 0));
-        barGroup1.add(new BarEntry(19, 1));
-        barGroup1.add(new BarEntry(WIPValue, 2));
-        barGroup1.add(new BarEntry(CompletedValue, 3));
-        barGroup1.add(new BarEntry(14, 4));
-        barGroup1.add(new BarEntry(16, 5));
+        barGroup1.add(new BarEntry(nodesList.get(1), 0));
+        barGroup1.add(new BarEntry(nodesList.get(2), 1));
+        barGroup1.add(new BarEntry(nodesList.get(0), 2));
+        barGroup1.add(new BarEntry(0, 3));
+        barGroup1.add(new BarEntry(0, 4));
+        barGroup1.add(new BarEntry(0, 5));
 
         list = new ArrayList<>();
         list.add("Team members");
-        list.add("Top priority");
-        list.add("Work in progress");
-        list.add("Completed");
-        list.add("On hold");
-        list.add("Deadline");
+        list.add("Tasks");
+        list.add("Description");
+        list.add("Calendar");
+        list.add("Events");
+        list.add("Notes");
 
         barDataSet = new BarDataSet(barGroup1, "Project statistics");
         data = new BarData(list, barDataSet);
@@ -126,14 +187,7 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
         barDataSet.setDrawValues(true);
         //forces all labels from list object to be visible
         barChart.getXAxis().setLabelsToSkip(0);
-
-        tasksFragment = new TasksFragment();
-
-        return view;
     }
-
-
-
 
     public int[] barColors(){
         return new int[] {Color.parseColor("#53ebdb"), Color.parseColor("#45c4b6")};
@@ -147,30 +201,36 @@ public class StatisticsChartFragment extends Fragment implements OnChartValueSel
             case 0:
                 //Team members
                 filterListener.setFilter("Members");
+                viewPager.setCurrentItem(1);
                 break;
             case 1:
                 //Top priority
                 filterListener.setFilter("Priority");
+                viewPager.setCurrentItem(2);
                 break;
             case 2:
                 //WIP
                 filterListener.setFilter("WIP");
+                viewPager.setCurrentItem(2);
                 break;
             case 3:
                 //Completed
                 filterListener.setFilter("Completed");
+                viewPager.setCurrentItem(2);
                 break;
             case 4:
                 //On hold
                 filterListener.setFilter("Pause");
+                viewPager.setCurrentItem(2);
                 break;
             case 5:
                 //Deadline
                 //TODO: set a deadline
                 filterListener.setFilter("Deadline");
+                viewPager.setCurrentItem(2);
                 break;
         }
-        viewPager.setCurrentItem(2);
+
         }
 
 

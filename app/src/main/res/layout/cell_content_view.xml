@@ -13,8 +13,11 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/task_card_header">
-
-            <TextView
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground">
+                <TextView
                 android:id="@+id/task_content_task_card_number"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -25,7 +28,7 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:text="0" />
 
-            <TextView
+                <TextView
                 android:id="@+id/task_content_task_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +41,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="26sp" />
 
-            <Button
+                <Button
                 android:id="@+id/task_content_collapse_content_view_cell"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -47,7 +50,7 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/task_card_icon_expand"
                 android:clickable="true" />
-
+            </RelativeLayout>
 
         </RelativeLayout>
 
@@ -59,22 +62,25 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/task_content_divider">
 
             <TextView
+                android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Task owners"
-                android:textColor="@android:color/white"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:text="Task owners"
+                android:textColor="@android:color/white" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/horizontal_divider"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <RelativeLayout
@@ -88,7 +94,7 @@
                 android:layout_height="80dp"
                 android:layout_alignParentStart="true"
                 android:layout_margin="15dp"
-                app:srcCompat="@drawable/member" />
+                app:srcCompat="@drawable/ic_member" />
 
             <TextView
                 android:id="@+id/textView13"
@@ -97,7 +103,8 @@
                 android:layout_below="@+id/task_content_owner_name"
                 android:layout_toEndOf="@+id/task_content_task_owner_pic"
                 android:text="4"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/task_content_owner_name"
@@ -112,7 +119,7 @@
                 android:id="@+id/task_content_people_working"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="1 working on the task"
                 android:textColor="@color/colorAccent"
                 android:layout_below="@+id/textView13"
                 android:layout_toEndOf="@+id/task_content_task_owner_pic" />
@@ -123,7 +130,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp">
+            android:background="@color/task_content_divider">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -138,7 +145,8 @@
                 android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/horizontal_divider"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
 
@@ -147,6 +155,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:weightSum="4">
@@ -159,7 +168,7 @@
                 android:background="@drawable/task_status_background_previous"
                 android:gravity="center_horizontal"
                 android:text="TextView"
-                android:textColor="@android:color/white"/>
+                android:textColor="@color/teal"/>
 
             <android.support.v4.widget.Space
                 android:layout_width="wrap_content"
@@ -174,7 +183,7 @@
                 android:background="@drawable/task_status_background"
                 android:gravity="center_horizontal"
                 android:text="TextView"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/teal" />
 
             <android.support.v4.widget.Space
                 android:layout_width="wrap_content"
@@ -189,13 +198,14 @@
                 android:background="@drawable/task_status_background_next"
                 android:gravity="center_horizontal"
                 android:text="TextView"
-                android:textColor="@android:color/white"/>
+                android:textColor="@color/teal"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp">
+
+            android:background="@color/task_content_divider">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -210,21 +220,23 @@
                 android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/horizontal_divider"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="5dp"
-                android:weightSum="10">
+                android:weightSum="10"
+                android:visibility="gone">
 
                 <Space
                     android:layout_width="wrap_content"
@@ -282,7 +294,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:weightSum="2">
-
+                <!-- TODO: this should be LinearLayout-->
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -311,7 +323,7 @@
                         android:layout_toEndOf="@id/label_difficulty"
                         android:background="@drawable/badge_subtitle"
                         android:gravity="center_horizontal|center_vertical"
-                        android:text="15"
+                        android:text="M"
                         android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -331,7 +343,7 @@
                         android:layout_centerVertical="true"
                         android:background="@drawable/badge_subtitle"
                         android:gravity="center_horizontal|center_vertical"
-                        android:text="15"
+                        android:text="H"
                         android:textColor="@color/colorAccent"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -356,7 +368,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp">
+            android:background="@color/task_content_divider">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -371,7 +383,8 @@
                 android:layout_height="2dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/horizontal_divider"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <TextView

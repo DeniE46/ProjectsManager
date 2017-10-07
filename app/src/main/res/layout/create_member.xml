@@ -2,7 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:background="@color/teal">
+
+    <TextView
+        android:id="@+id/title_new_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add a member"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:background="@color/task_content_divider"
+        android:layout_alignParentTop="true"/>
+
+    <ImageView
+        android:id="@+id/image_ic_new_member"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_below="@id/title_new_member"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_new_member_window" />
+
+    <ImageView
+        android:id="@+id/image_view_ic_add_new_member_name"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_add_member_name"
+        android:layout_below="@id/image_ic_new_member"
+        android:tint="@android:color/white"
+        android:paddingTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -10,15 +41,112 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/member_name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@id/image_ic_new_member"
+        android:layout_toEndOf="@id/image_view_ic_add_new_member_name"
+        android:layout_alignParentStart="true"
+        android:backgroundTint="@android:color/white"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingStart="30dp"/>
+
+    <ImageView
+        android:id="@+id/image_view_ic_add_new_member_occupancy"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_add_new_member_occupancy"
+        android:layout_below="@id/member_name"
+        android:tint="@android:color/white"
+        android:paddingTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/member_position"
         android:layout_below="@+id/member_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@id/image_view_ic_add_new_member_occupancy"
+        android:backgroundTint="@android:color/white"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingStart="30dp"/>
+
+    <ImageView
+        android:id="@+id/image_view_ic_add_new_member_phone"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_add_new_member_phone"
+        android:layout_below="@id/member_position"
+        android:tint="@android:color/white"
+        android:paddingTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
+
+    <EditText
+        android:id="@+id/contact_new_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/member_position"
+        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@id/image_view_ic_add_new_member_phone"
+        android:backgroundTint="@android:color/white"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingStart="30dp"/>
+
+    <ImageView
+        android:id="@+id/image_view_ic_add_new_member_fb"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_add_new_member_fb"
+        android:layout_below="@id/contact_new_member"
+        android:tint="@android:color/white"
+        android:paddingTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
+
+    <EditText
+        android:id="@+id/fb_new_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contact_new_member"
+        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@id/image_view_ic_add_new_member_fb"
+        android:backgroundTint="@android:color/white"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingStart="30dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fb_new_member"
+        android:orientation="horizontal"
+        android:weightSum="3">
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.4"/>
+        <Button
+            android:id="@+id/btn_dismiss_create_new_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Dismiss"
+            android:layout_weight="0.8"
+            android:background="@null"
+            android:textColor="@android:color/white"/>
+        <Button
+            android:id="@+id/btn_create_new_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Create"
+            android:textColor="@android:color/white"
+            android:layout_weight="0.8"
+            android:background="@null"/>
+    </LinearLayout>
 </RelativeLayout>

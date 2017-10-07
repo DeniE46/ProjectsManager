@@ -9,13 +9,15 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/edit_project_name"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/colorAccent"/>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/edit_project_description"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/colorAccent"/>
 </LinearLayout>
