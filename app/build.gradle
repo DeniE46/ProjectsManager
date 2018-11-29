@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.adk.projectsmanager"
         minSdkVersion 21
@@ -44,5 +44,10 @@ dependencies {
     compile 'com.github.danimahardhika:cafebar:1.1.4'
     compile 'com.applandeo:material-calendar-view:1.1.0'
     testCompile 'junit:junit:4.12'
+
+    configurations.all {
+        resolutionStrategy {
+            force 'com.android.support:support-v4:25.3.1'
+        }}
 
 }
